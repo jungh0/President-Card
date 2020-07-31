@@ -9,7 +9,7 @@ namespace Game
 
         public enum Suits
         {
-            Diamond,Club, Heart, Spade
+            Diamond, Club, Heart, Spade
         }
 
         public enum Ranks
