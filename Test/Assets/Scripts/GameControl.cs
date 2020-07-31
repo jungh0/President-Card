@@ -23,7 +23,6 @@ namespace Game
         
         private int currentPhase;
 
-        // ¡÷ºÆ æ»≥Û
 
         void Awake()
         {
@@ -42,6 +41,7 @@ namespace Game
  
         void Update()
         {
+            return;
             if(currentPhase == playerPhase)
             {
                 int status = player.GetValue();
@@ -135,7 +135,7 @@ namespace Game
 
             GameObject playerClone = Instantiate(playerPrefab);
             house = playerClone.GetComponent<Player>();
-            house.Initialise(0, 1.5f, true);
+            house.Initialise(0, 3.5f, true);
             houseTxtRT.anchoredPosition = new Vector2((house.xPos) * canvasScale, (house.yPos - 1) * canvasScale - padding);
 
             GameObject statusTxtClone = Instantiate(textPrefab);
@@ -166,11 +166,12 @@ namespace Game
                 yield return new WaitForSecondsRealtime(0.3F);
                 n--;
             }
+         
 
-            gameButtons[0].gameObject.SetActive(true);
-            gameButtons[1].gameObject.SetActive(true);
-            playerTxt.gameObject.SetActive(true);
-            houseTxt.gameObject.SetActive(true);
+            //gameButtons[0].gameObject.SetActive(true);
+            //gameButtons[1].gameObject.SetActive(true);
+            //playerTxt.gameObject.SetActive(true);
+            //houseTxt.gameObject.SetActive(true);
 
             currentPhase = playerPhase;
 

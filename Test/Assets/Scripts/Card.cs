@@ -14,8 +14,9 @@ namespace Game
 
         public enum Ranks
         {
-            Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King
+            Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace, Two
         }
+
 
         public Suits Suit { get; set; }
         public Ranks Rank { get; set; }

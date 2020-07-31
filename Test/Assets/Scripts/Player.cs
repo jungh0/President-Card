@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game
@@ -23,21 +21,23 @@ namespace Game
         public override void Add(Card c)
         {
             base.Add(c);
+            Sort();
             int size = cards.Count;
-            for(int i = 0; i < size; i++)
+            for (int i = 0; i < size; i++)
             {
-                if (i < size - 1)
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+                if (size / 2 <= i - 1)
                 {
-                    iTween.MoveTo(cards[i].gameObject, new Vector2(cards[i].transform.position.x - .2f, yPos), 1f);
+                    iTween.MoveTo(cards[i].gameObject, new Vector2(1f * (i-(size / 2)), yPos), 1f);
                 }
                 else
                 {
-                    iTween.MoveTo(cards[i].gameObject, new Vector2(xPos + (i * (.2f)), yPos), 1f);
+                    iTween.MoveTo(cards[i].gameObject, new Vector2( -1f * ((size / 2)-i), yPos), 1f);
                 }
 
                 if (isHouse)
                 {
-                    cards[i].Hide();
+                    cards[i].Show();
                 }
                 else
                 {

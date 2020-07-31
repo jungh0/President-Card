@@ -14,7 +14,7 @@ namespace Game
                 {
                     GameObject card = Instantiate(cardPrefab);
                     Card c = card.GetComponent<Card>() as Card;
-                    c.Initialise((Card.Suits)i, (Card.Ranks)j, new Vector2(0, 4), Quaternion.identity,faces[(i*13) + j]);
+                    c.Initialise((Card.Suits)i, (Card.Ranks)j, new Vector2(5, 0), Quaternion.identity,faces[(i*13) + j]);
                     Add(c);
                 }
             }
@@ -37,6 +37,7 @@ namespace Game
 
         public void Shuffle()
         {
+
             for(int i = cards.Count - 1; i > 0; i--)
             {
                 int j = Random.Range(0, i);
