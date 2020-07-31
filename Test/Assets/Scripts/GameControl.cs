@@ -23,6 +23,7 @@ namespace Game
         
         private int currentPhase;
 
+        // ¡÷ºÆ
 
         void Awake()
         {
