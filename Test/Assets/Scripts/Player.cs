@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace Game
 {
+    /// <summary>
+    /// /aaaaaaaaa
+    /// /aaaaaaaaa
+    /// </summary>
     public class Player : Hand
     {
         public float xPos, yPos;
