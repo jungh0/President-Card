@@ -23,7 +23,7 @@ namespace Game
         
         private int currentPhase;
 
-        // 주석
+        // 주석 안농
 
         void Awake()
         {
