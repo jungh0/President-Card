@@ -1,0 +1,28 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using UnityEngine;
+
+public class Intro : MonoBehaviour
+{
+    public GameObject Main;
+    public GameObject Sub;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    public void ClickStart()
+    {
+        Main.GetComponent<Camera>().enabled = false;
+        Sub.GetComponent<Camera>().enabled = true;
+    }
+}
