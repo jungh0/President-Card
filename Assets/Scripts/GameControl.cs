@@ -89,7 +89,7 @@ namespace Game
                 deck.Deal(house1);
                 deck.Deal(house2);
                 deck.Deal(house3);
-                yield return new WaitForSecondsRealtime(0.3F);
+                yield return new WaitForSecondsRealtime(0.15F);
                 n--;
             }
             currentPhase = playerPhase;
