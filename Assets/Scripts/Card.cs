@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -98,7 +99,8 @@ namespace Game
         //    }
         //}
 
-        private GameObject target;
+        //private GameObject target;
+        private static int order = 0;
 
         void Update()
         {
@@ -111,7 +113,11 @@ namespace Game
                 Physics.Raycast(ray, out hit2);
 
                 Debug.Log(hit2.transform.gameObject);
-                hit2.transform.gameObject.transform.Translate(0, 0.01f, 0);
+                hit2.transform.gameObject.GetComponent<SpriteRenderer>().sortingOrder = order++;
+
+                iTween.MoveTo(hit2.transform.gameObject, new Vector2(0, 0), 1f);
+                //hit2.transform.gameObject.transform.Translate(0, 0.01f, 0);
+                //iTween.MoveTo(hit2, new Vector2(0,0), 1f);
                 //hit2.transform.gameObject.transform.localPosition = new Vector3(0, 0, 0); // 카드 내기
 
             }
