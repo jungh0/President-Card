@@ -15,7 +15,7 @@ namespace Game
                     GameObject card = Instantiate(cardPrefab);
                     Card c = card.GetComponent<Card>() as Card;
                     c.Initialise((Card.Suits)i, (Card.Ranks)j, new Vector2(5, 0), Quaternion.identity,faces[(i*13) + j]);
-                    Add(c);
+                    Add(c, null);
                 }
             }
         }
@@ -48,7 +48,7 @@ namespace Game
             }
         }
 
-        public void Deal(Hand hand)
+        public void Deal(Player hand)
         {
             if(cards.Count != 0)
             {

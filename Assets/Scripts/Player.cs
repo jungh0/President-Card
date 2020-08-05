@@ -9,39 +9,68 @@ namespace Game
     public class Player : Hand
     {
         public float xPos, yPos;
-        private bool isHouse;
-        public void Initialise(float x, float y, bool houseOrPlayer)
+        public bool isHouse;
+        public bool isTrash;
+
+        public void Initialise(float x, float y, bool houseOrPlayer, bool isTrash)
         {
             base.Initialise();
             xPos = x;
             yPos = y;
             isHouse = houseOrPlayer;
+            this.isTrash = isTrash;
         }
 
-        public override void Add(Card c)
+        public Card PlayCard(Card c)
         {
-            base.Add(c);
-            Sort();
+            foreach(var tmp in this.cards)
+            {
+                if(c == null || tmp.Rank > c.Rank)
+                {
+                    return tmp;
+                }
+            }
+            return null;
+        }
+
+        public void Add(Card c)
+        {
+            base.Add(c,this);
+            if (!isTrash)
+            {
+                Sort();
+            }
+               
             int size = cards.Count;
             for (int i = 0; i < size; i++)
             {
                 float cardDistance = 1f;
-                if (isHouse)
+                if (isHouse && !isTrash)
                 {
                     cardDistance = 0.3f;
                 }
 
+
                 cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
-                if (size / 2 <= i - 1)
+
+                if (!isTrash)
                 {
-                    iTween.MoveTo(cards[i].gameObject, new Vector2(cardDistance * (i-(size / 2)) + xPos, yPos), 1f);
+                    if (size / 2 <= i - 1)
+                    {
+                        iTween.MoveTo(cards[i].gameObject, new Vector2(cardDistance * (i - (size / 2)) + xPos, yPos), 1f);
+                    }
+                    else
+                    {
+                        iTween.MoveTo(cards[i].gameObject, new Vector2(-1 * cardDistance * ((size / 2) - i) + xPos, yPos), 1f);
+                    }
                 }
                 else
                 {
-                    iTween.MoveTo(cards[i].gameObject, new Vector2( -1 * cardDistance * ((size / 2)-i) + xPos, yPos), 1f);
+                    iTween.MoveTo(cards[i].gameObject, new Vector2(0,0), 1f);
                 }
+                
 
-                if (isHouse)
+                if (isHouse && !isTrash)
                 {
                     cards[i].Hide();
                 }

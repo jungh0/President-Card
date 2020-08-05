@@ -20,9 +20,4 @@ public class Intro : MonoBehaviour
         
     }
 
-    public void ClickStart()
-    {
-        Main.GetComponent<Camera>().enabled = false;
-        Sub.GetComponent<Camera>().enabled = true;
-    }
 }

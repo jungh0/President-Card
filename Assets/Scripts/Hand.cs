@@ -36,8 +36,9 @@ namespace Game
            );
         }
 
-        public virtual void Add(Card c)
+        public virtual void Add(Card c, Player owner)
         {
+            c.owner = owner;
             cards.Add(c);
         }
 
@@ -57,6 +58,7 @@ namespace Game
                 if (!c.isFaceUp) c.Flip();
             }
         }
+
 
     }
 }
