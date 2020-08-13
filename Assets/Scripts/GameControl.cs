@@ -17,12 +17,14 @@ namespace Game
         public Button start;
         public Button pass;
 
+        public GameObject text;
 
         public GameObject deckPrefab;
         public GameObject playerPrefab;
         public GameObject buttonPrefab;
 
         public GameObject Canvas;
+        public Transform CanvasTranform;
 
         private Deck deck;
         private Player player, house1, house2, house3;
@@ -31,6 +33,9 @@ namespace Game
         
         public bool isLoading = true;
         public Turn turn;
+
+        public GameObject playingStr;
+        public GameObject playerName1, playerName2, playerName3;
 
         public void PassClick()
         {
@@ -41,6 +46,8 @@ namespace Game
 
         public void StartAndChaneScreen()
         {
+            CanvasTranform = Canvas.GetComponent<Transform>();
+            
             start.enabled = false;
             Main.GetComponent<Camera>().enabled = true;
             Sub.GetComponent<Camera>().enabled = false;
@@ -64,6 +71,12 @@ namespace Game
  
         void Update()
         {
+            var now = turn.GetNowTurn();
+  
+
+
+            pass.GetComponentInChildren<Text>().text = now.name;
+            //Debug.Log(turn.TotalPlayer().ToString());
             if (Input.GetMouseButtonDown(0) && !isLoading)
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -72,11 +85,15 @@ namespace Game
                 Physics.Raycast(ray, out RaycastHit hit2);
 
                 var clickedCard = hit2.transform.gameObject.GetComponent<Card>();
-                if (!clickedCard.owner.isHouse && turn.GetNowTurn() == clickedCard.owner)
+                if(clickedCard != null)
                 {
-                    TrashCard(clickedCard.owner, clickedCard);
+                    if (!clickedCard.owner.isHouse && turn.GetNowTurn() == clickedCard.owner)
+                    {
+                        TrashCard(clickedCard.owner, clickedCard);
 
+                    }
                 }
+                
 
 
             }
@@ -88,7 +105,8 @@ namespace Game
 
         private void CheckPass()
         {
-            if (passCnt >= 3)
+            Debug.Log($"{passCnt + 1} {turn.TotalPlayer()}");
+            if (passCnt + 1 >= turn.TotalPlayer())
             {
                 nowStatus = null;
                 passCnt = 0;
@@ -106,21 +124,23 @@ namespace Game
 
             if (nowStatus == null || wantTrash.Rank > nowStatus.Rank)
             {
+                
                 var deck = p.cards;
 
                 if (deck.Contains(wantTrash))
                 {
+                    passCnt = 0;
                     deck.Remove(wantTrash);
 
                     trash.Add(wantTrash);
 
                     nowStatus = wantTrash;
-
-
                     turn.NextTurn();
                     StartCoroutine(AI());
 
                 }
+
+
 
                 
             }
@@ -130,49 +150,72 @@ namespace Game
         private IEnumerator AI()
         {
             yield return new WaitForSeconds(1);
-            if (turn.GetNowTurn().isHouse)
-            {
-                CheckPass();
-                var available = turn.GetNowTurn().PlayCard(nowStatus);
-                if(available != null)
-                {
-                    TrashCard(turn.GetNowTurn(), available);
-                }
-                else
-                {
-                    passCnt += 1;
-                    turn.NextTurn();
-                    StartCoroutine(AI());
-                }
 
+            var p = turn.GetNowTurn();
+            CheckPass();
+            if (p.cards.Count == 0)
+            {
+                turn.DelPlayer(p);
+                StartCoroutine(AI());
             }
+            else
+            {
+                if (p.isHouse)
+                {
+                    var available = p.PlayCard(nowStatus);
+                    if (available != null)
+                    {
+                        TrashCard(turn.GetNowTurn(), available);
+                    }
+                    else
+                    {
+                        passCnt += 1;
+                        turn.NextTurn();
+                        StartCoroutine(AI());
+                    }
+                }
+            }
+
+            
         }
 
 
         private void InitPlayers()
         {
             player = playerPrefab.GetComponent<Player>();
-            player.Initialise(0, -3.5f, false, false);
+            player.Initialise(0, -3.5f, false, false, "PASS");
             turn.AddPlayer(player);
 
             GameObject playerClone1 = Instantiate(playerPrefab);
             house1 = playerClone1.GetComponent<Player>();
-            house1.Initialise(7f, 3.5f, true, false);
+            house1.Initialise(-7f, 3.5f, true, false, "com1's turn");
             turn.AddPlayer(house1);
+
+            playerName1 = Instantiate(text, new Vector3(-7F, 2f, 0), Quaternion.identity);
+            playerName1.transform.parent = CanvasTranform;
+            playerName1.GetComponentInChildren<Text>().text = "com1";
 
             GameObject playerClone2 = Instantiate(playerPrefab);
             house2 = playerClone2.GetComponent<Player>();
-            house2.Initialise(0, 3.5f, true, false);
+            house2.Initialise(0, 3.5f, true, false, "com2's turn");
             turn.AddPlayer(house2);
+
+            playerName2 = Instantiate(text, new Vector3(0, 2f, 0), Quaternion.identity);
+            playerName2.transform.parent = CanvasTranform;
+            playerName2.GetComponentInChildren<Text>().text = "com2";
 
             GameObject playerClone3 = Instantiate(playerPrefab);
             house3 = playerClone3.GetComponent<Player>();
-            house3.Initialise(-7f, 3.5f, true, false);
+            house3.Initialise(7f, 3.5f, true, false, "com3's turn");
             turn.AddPlayer(house3);
+
+            playerName3 = Instantiate(text, new Vector3(7F, 2f, 0), Quaternion.identity);
+            playerName3.transform.parent = CanvasTranform;
+            playerName3.GetComponentInChildren<Text>().text = "com3";
 
             GameObject trashClone = Instantiate(playerPrefab);
             trash = trashClone.GetComponent<Player>();
-            trash.Initialise(0f, 0f, true, true);
+            trash.Initialise(0f, 0f, true, true, "trash's turn");
 
         }
 

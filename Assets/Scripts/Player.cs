@@ -11,14 +11,16 @@ namespace Game
         public float xPos, yPos;
         public bool isHouse;
         public bool isTrash;
+        public string name;
 
-        public void Initialise(float x, float y, bool houseOrPlayer, bool isTrash)
+        public void Initialise(float x, float y, bool houseOrPlayer, bool isTrash, string name)
         {
             base.Initialise();
             xPos = x;
             yPos = y;
             isHouse = houseOrPlayer;
             this.isTrash = isTrash;
+            this.name = name;
         }
 
         public Card PlayCard(Card c)

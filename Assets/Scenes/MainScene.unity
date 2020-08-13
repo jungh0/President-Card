@@ -266,13 +266,14 @@ MonoBehaviour:
   Sub: {fileID: 835682164}
   start: {fileID: 2140239865}
   pass: {fileID: 742834401}
+  text: {fileID: 7835076340585410168, guid: 2ea43f91037274b48ac039790761814a, type: 3}
   deckPrefab: {fileID: 6109096735870920523, guid: 299636f7276426048b79cc7343f4614f,
     type: 3}
   playerPrefab: {fileID: 1062096631670801029, guid: 9feefb660dd836743b4d7eefd7d8e68f,
     type: 3}
   buttonPrefab: {fileID: 6881748508480447824, guid: faec295a15909df4cbfb227e89d07cc6,
     type: 3}
-  Canvas: {fileID: 0}
+  Canvas: {fileID: 263730672}
   trash: {fileID: 0}
   isLoading: 1
   turn: {fileID: 0}
@@ -403,7 +404,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -467, y: 199}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 320, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &835682164
 GameObject:
@@ -786,10 +787,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 3
     m_MaxSize: 40
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -863,10 +864,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 3
     m_MaxSize: 40
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -920,7 +921,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 320, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2140239865
 MonoBehaviour:

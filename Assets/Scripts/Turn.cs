@@ -18,9 +18,27 @@ public class Turn : MonoBehaviour
         totalPlayer.Add(a);
     }
 
+    public int TotalPlayer()
+    {
+        return totalPlayer.Count;
+    }
+
+    public void DelPlayer(Player a)
+    {
+        totalPlayer.Remove(a);
+    }
+
     public Player GetNowTurn()
     {
-        return totalPlayer[nowIndex];
+        try
+        {
+            return totalPlayer[nowIndex];
+        }
+        catch
+        {
+            nowIndex = 0;
+            return totalPlayer[0];
+        }
     }
 
     public void NextTurn()
