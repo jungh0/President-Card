@@ -46,6 +46,23 @@ namespace Game
             Destroy(gameObject);
         }
 
+        /// <summary>
+        /// π›≈ı∏Ì
+        /// </summary>
+        /// <param name="status"></param>
+        public void Disable(bool status)
+        {
+            if (status)
+            {
+                _spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f, 1f);
+            }
+            else
+            {
+                _spriteRenderer.color = new Color(1,1,1, 1f);
+                //_spriteRenderer.color = new Color(_spriteRenderer.color.r, _spriteRenderer.color.g, _spriteRenderer.color.b, f);
+            }
+        }
+
         public void Flip()
         {
             if (isFaceUp)

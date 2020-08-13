@@ -12,8 +12,9 @@ namespace Game
         public bool isHouse;
         public bool isTrash;
         public string name;
+        public GameObject text;
 
-        public void Initialise(float x, float y, bool houseOrPlayer, bool isTrash, string name)
+        public void Initialise(float x, float y, bool houseOrPlayer, bool isTrash, string name, GameObject text)
         {
             base.Initialise();
             xPos = x;
@@ -21,6 +22,7 @@ namespace Game
             isHouse = houseOrPlayer;
             this.isTrash = isTrash;
             this.name = name;
+            this.text = text;
         }
 
         public Card PlayCard(Card c)
@@ -35,14 +37,21 @@ namespace Game
             return null;
         }
 
-        public void Add(Card c)
+        public void CardDisable(bool status)
         {
-            base.Add(c,this);
+            foreach (var tmp in this.cards)
+            {
+                tmp.Disable(status);
+            }
+        }
+
+        public void SortCard()
+        {
             if (!isTrash)
             {
                 Sort();
             }
-               
+
             int size = cards.Count;
             for (int i = 0; i < size; i++)
             {
@@ -51,7 +60,6 @@ namespace Game
                 {
                     cardDistance = 0.3f;
                 }
-
 
                 cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
 
@@ -68,9 +76,9 @@ namespace Game
                 }
                 else
                 {
-                    iTween.MoveTo(cards[i].gameObject, new Vector2(0,0), 1f);
+                    iTween.MoveTo(cards[i].gameObject, new Vector2(0, 0), 1f);
                 }
-                
+
 
                 if (isHouse && !isTrash)
                 {
@@ -81,7 +89,13 @@ namespace Game
                     cards[i].Show();
                 }
                 //if(!cards[i].isFaceUp && (!isHouse || i != 1)) ;
-            } 
+            }
+        }
+
+        public void Add(Card c)
+        {
+            base.Add(c,this);
+            SortCard();
         }
 
         public int GetValue()

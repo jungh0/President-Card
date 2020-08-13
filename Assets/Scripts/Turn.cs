@@ -30,14 +30,21 @@ public class Turn : MonoBehaviour
 
     public Player GetNowTurn()
     {
-        try
+        if(totalPlayer.Count > 0)
         {
-            return totalPlayer[nowIndex];
+            try
+            {
+                return totalPlayer[nowIndex];
+            }
+            catch
+            {
+                nowIndex = 0;
+                return totalPlayer[0];
+            }
         }
-        catch
+        else
         {
-            nowIndex = 0;
-            return totalPlayer[0];
+            return null;
         }
     }
 
