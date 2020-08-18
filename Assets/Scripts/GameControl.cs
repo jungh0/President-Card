@@ -52,6 +52,7 @@ namespace Game
         /// </summary>
         public void PassClick()
         {
+            SoundManager.instance.PlaySound("soundCard3");
             passCnt += 1;
             turn.NextTurn();
             StartCoroutine(AI());
@@ -192,6 +193,7 @@ namespace Game
                 var deck = p.cards;
                 if (deck.Contains(wantTrash))
                 {
+                    SoundManager.instance.PlaySound("soundCard2");
                     passCnt = 0;
                     deck.Remove(wantTrash);
                     trash.Add(wantTrash);
@@ -240,6 +242,7 @@ namespace Game
                     }
                     else
                     {
+                        SoundManager.instance.PlaySound("soundCard3");
                         passCnt += 1;
                         turn.NextTurn();
                         StartCoroutine(AI());
@@ -319,9 +322,9 @@ namespace Game
         /// <returns></returns>
         private IEnumerator InitialDeal()
         {
-            SoundManager.instance.PlaySound();
-            yield return new WaitForSeconds(1);
             
+            yield return new WaitForSeconds(1);
+            //SoundManager.instance.PlaySound("soundShuffle");
             int n = 10;
             while (n > 0)
             {
@@ -329,7 +332,7 @@ namespace Game
                 deck.Deal(house1);
                 deck.Deal(house2);
                 deck.Deal(house3);
-                yield return new WaitForSecondsRealtime(0.15F);
+                yield return new WaitForSecondsRealtime(0.2F);
                 n--;
             }
             isLoading = false;

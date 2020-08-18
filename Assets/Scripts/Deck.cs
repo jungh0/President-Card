@@ -52,6 +52,7 @@ namespace Game
         {
             if(cards.Count != 0)
             {
+                SoundManager.instance.PlaySound("soundCard2");
                 Card top = cards[0];
                 cards.Remove(top);
                 hand.Add(top);

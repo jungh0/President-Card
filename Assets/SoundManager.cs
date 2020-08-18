@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    public AudioClip soundShuffle;
-    AudioSource myAudio;
-
     public static SoundManager instance;
 
     private void Awake()
@@ -15,18 +12,11 @@ public class SoundManager : MonoBehaviour
             SoundManager.instance = this;
     }
 
-    void Start()
+    public void PlaySound(string soundName)
     {
-        myAudio = GetComponent<AudioSource>();
+        GameObject.Find(soundName).GetComponent<AudioSource>().Play();
+
     }
 
-    public void PlaySound()
-    {
-        myAudio.PlayOneShot(soundShuffle);
-    }
 
-    void Update()
-    {
-        
-    }
 }
