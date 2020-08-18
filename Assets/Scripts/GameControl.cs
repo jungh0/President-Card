@@ -314,12 +314,14 @@ namespace Game
         }
 
         /// <summary>
-        /// 최조의 카드 나눠줌
+        /// 최초의 카드 나눠줌
         /// </summary>
         /// <returns></returns>
         private IEnumerator InitialDeal()
         {
+            SoundManager.instance.PlaySound();
             yield return new WaitForSeconds(1);
+            
             int n = 10;
             while (n > 0)
             {
