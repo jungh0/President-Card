@@ -1,45 +1,51 @@
 ﻿using Game;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class Turn : MonoBehaviour
+public class Turn : WinManager
 {
     private int nowIndex = 0;
+    private readonly List<Player> nowPlayer = new List<Player>();
     private readonly List<Player> totalPlayer = new List<Player>();
+    public Player trash;
 
     public void Initialise()
     {
-        
+
     }
 
     public void AddPlayer(Player a)
     {
+        nowPlayer.Add(a);
         totalPlayer.Add(a);
     }
 
-    public int TotalPlayer()
+    public List<Player> GetTotalPlayer()
     {
-        return totalPlayer.Count;
+        return totalPlayer;
     }
 
-    public void DelPlayer(Player a)
+    public int NowPlayerCount()
     {
-        totalPlayer.Remove(a);
+        return nowPlayer.Count;
+    }
+
+    public void DelNowPlayer(Player a)
+    {
+        nowPlayer.Remove(a);
     }
 
     public Player GetNowTurn()
     {
-        if(totalPlayer.Count > 0)
+        if (nowPlayer.Count > 0)
         {
             try
             {
-                return totalPlayer[nowIndex];
+                return nowPlayer[nowIndex];
             }
             catch
             {
                 nowIndex = 0;
-                return totalPlayer[0];
+                return nowPlayer[0];
             }
         }
         else
@@ -51,7 +57,7 @@ public class Turn : MonoBehaviour
     public void NextTurn()
     {
         nowIndex += 1;
-        if(totalPlayer.Count <= nowIndex)
+        if (nowPlayer.Count <= nowIndex)
         {
             nowIndex = 0;
         }

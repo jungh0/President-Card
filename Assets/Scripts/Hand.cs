@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,7 +17,8 @@ namespace Game
 
         public void Sort()
         {
-            cards.Sort((a, b) => {
+            cards.Sort((a, b) =>
+            {
                 if ((int)a.Rank > (int)b.Rank)
                 {
                     return 1;
@@ -53,7 +53,7 @@ namespace Game
 
         public void FlipFaceUp()
         {
-            foreach(Card c in cards)
+            foreach (Card c in cards)
             {
                 if (!c.isFaceUp) c.Flip();
             }

@@ -27,9 +27,9 @@ namespace Game
 
         public Card PlayCard(Card c)
         {
-            foreach(var tmp in this.cards)
+            foreach (var tmp in this.cards)
             {
-                if(c == null || tmp.Rank > c.Rank)
+                if (c == null || tmp.Rank > c.Rank)
                 {
                     return tmp;
                 }
@@ -94,16 +94,16 @@ namespace Game
 
         public void Add(Card c)
         {
-            base.Add(c,this);
+            base.Add(c, this);
             SortCard();
         }
 
         public int GetValue()
         {
-        //Sums card value
+            //Sums card value
             int val = 0;
             bool hasAce = false;
-            foreach(Card c in cards)
+            foreach (Card c in cards)
             {
                 if (c.isFaceUp)
                 {
@@ -111,7 +111,7 @@ namespace Game
                     else val += (int)c.Rank + 1;
 
                     if (c.Rank == Card.Ranks.Ace) hasAce = true;
-                } 
+                }
             }
 
             if (hasAce && val <= 11) val += 10;

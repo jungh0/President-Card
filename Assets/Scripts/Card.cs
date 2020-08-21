@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game
@@ -58,7 +55,7 @@ namespace Game
             }
             else
             {
-                _spriteRenderer.color = new Color(1,1,1, 1f);
+                _spriteRenderer.color = new Color(1, 1, 1, 1f);
                 //_spriteRenderer.color = new Color(_spriteRenderer.color.r, _spriteRenderer.color.g, _spriteRenderer.color.b, f);
             }
         }
@@ -89,7 +86,7 @@ namespace Game
             isFaceUp = false;
         }
 
-    
+
         //void FixedUpdate()
         //{
         //    if (Input.GetMouseButtonDown(0))

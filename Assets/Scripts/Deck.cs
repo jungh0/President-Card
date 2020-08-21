@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game
 {
     public class Deck : Hand
-    {      
+    {
         public void Populate()
         {
             for (int i = 0; i < 4; i++)
@@ -14,7 +12,7 @@ namespace Game
                 {
                     GameObject card = Instantiate(cardPrefab);
                     Card c = card.GetComponent<Card>() as Card;
-                    c.Initialise((Card.Suits)i, (Card.Ranks)j, new Vector2(5, 0), Quaternion.identity,faces[(i*13) + j]);
+                    c.Initialise((Card.Suits)i, (Card.Ranks)j, new Vector2(5, 0), Quaternion.identity, faces[(i * 13) + j]);
                     Add(c, null);
                 }
             }
@@ -29,8 +27,8 @@ namespace Game
                 for (int c = 0; c < 13; c++)
                 {
                     int index = (r * 13) + c;
-                    cards[index].transform.position = new Vector2(x + (c*.5f), y + (r*-3));
-                    if(c % 2 == 0) cards[index].Flip();
+                    cards[index].transform.position = new Vector2(x + (c * .5f), y + (r * -3));
+                    if (c % 2 == 0) cards[index].Flip();
                 }
             }
         }
@@ -38,7 +36,7 @@ namespace Game
         public void Shuffle()
         {
 
-            for(int i = cards.Count - 1; i > 0; i--)
+            for (int i = cards.Count - 1; i > 0; i--)
             {
                 int j = Random.Range(0, i);
                 Card temp = cards[i];
@@ -50,16 +48,16 @@ namespace Game
 
         public void Deal(Player hand)
         {
-            if(cards.Count != 0)
+            if (cards.Count != 0)
             {
                 SoundManager.instance.PlaySound("soundCard2");
                 Card top = cards[0];
                 cards.Remove(top);
                 hand.Add(top);
             }
-           
+
         }
-      
+
     }
 
 }
