@@ -19,4 +19,9 @@ public class WinManager : MonoBehaviour
         p.text.GetComponentInChildren<Text>().text = $"{whoWin.Count} 등!!!";
     }
 
+    public bool IsGameDone()
+    {
+        return whoWin.Count >= 4;
+    }
+
 }

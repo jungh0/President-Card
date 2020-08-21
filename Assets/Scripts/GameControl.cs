@@ -41,17 +41,22 @@ namespace Game
         public void StartAndChaneScreen()
         {
             CanvasTranform = Canvas.GetComponent<Transform>();
-            turn = gameObject.AddComponent<GameAlgorithm>();
             Main.GetComponent<Camera>().enabled = true;
             Sub.GetComponent<Camera>().enabled = false;
             start.enabled = false;
 
+            RealStart();
+        }
+
+        public void RealStart()
+        {
+            turn = gameObject.AddComponent<GameAlgorithm>();
+            isLoading = true;
             InitPlayers();
             deck = deckPrefab.GetComponent<Deck>();
             deck.Initialise();
             deck.Populate();
             deck.Shuffle();
-
             StartCoroutine(InitialDeal());
         }
 
@@ -66,6 +71,11 @@ namespace Game
         /// </summary>
         void Update()
         {
+            if (turn?.IsGameDone() ?? false)
+            {
+                RealStart();
+            }
+
             //누구 차례인지 버튼에서 글자바꿔주고 비활성화 관리
             if (turn?.GetNowTurn() is Player now)
             {

@@ -107,35 +107,41 @@ public class GameAlgorithm : Turn
     {
         yield return new WaitForSeconds(1);
 
-        CheckPass();
+        try
+        {
+            CheckPass();
 
-        var p = this.GetNowTurn();
-        if (p.cards.Count == 0)
-        {
-            //이 플레이어는 승리 했다.
-            //가지고있는 카드의 개수가 0이다.
-            this.DelNowPlayer(p);
-            StartCoroutine(AI()); //그러므로 다음 턴
-        }
-        else
-        {
-            if (p.isHouse)
+            var p = this.GetNowTurn();
+            if (p.cards.Count == 0)
             {
-                var available = p.PlayCard(nowStatus);
-                if (available != null)
+                //이 플레이어는 승리 했다.
+                //가지고있는 카드의 개수가 0이다.
+                this.DelNowPlayer(p);
+                StartCoroutine(AI()); //그러므로 다음 턴
+            }
+            else
+            {
+                if (p.isHouse)
                 {
-                    TrashCard(this.GetNowTurn(), available);
-                }
-                else
-                {
-                    SoundManager.instance.PlaySound("soundCard3");
-                    passCnt += 1;
-                    this.NextTurn();
-                    StartCoroutine(AI());
+                    var available = p.PlayCard(nowStatus);
+                    if (available != null)
+                    {
+                        TrashCard(this.GetNowTurn(), available);
+                    }
+                    else
+                    {
+                        SoundManager.instance.PlaySound("soundCard3");
+                        passCnt += 1;
+                        this.NextTurn();
+                        StartCoroutine(AI());
+                    }
                 }
             }
         }
+        catch
+        {
 
+        }
     }
 
 }
