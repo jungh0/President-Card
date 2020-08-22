@@ -33,7 +33,7 @@ namespace Game
                 }
 
             }
-           );
+            );
         }
 
         public virtual void Add(Card c, Player owner)

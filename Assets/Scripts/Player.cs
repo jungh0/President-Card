@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game
@@ -37,7 +38,7 @@ namespace Game
             return null;
         }
 
-        public void CardDisable(bool status)
+        public void AllCardDisable(bool status)
         {
             foreach (var tmp in this.cards)
             {
@@ -55,7 +56,7 @@ namespace Game
             int size = cards.Count;
             for (int i = 0; i < size; i++)
             {
-                float cardDistance = 1f;
+                float cardDistance = 1.2f;
                 if (isHouse && !isTrash)
                 {
                     cardDistance = 0.3f;
@@ -76,7 +77,7 @@ namespace Game
                 }
                 else
                 {
-                    iTween.MoveTo(cards[i].gameObject, new Vector2(0, 0), 1f);
+                    //iTween.MoveTo(cards[i].gameObject, new Vector2(0, 0), 1f);
                 }
 
 
@@ -89,6 +90,19 @@ namespace Game
                     cards[i].Show();
                 }
                 //if(!cards[i].isFaceUp && (!isHouse || i != 1)) ;
+            }
+        }
+
+        public void SortCardTrash(List<Card> cards)
+        {
+            int size = cards.Count;
+            for (int i = 0; i < size; i++)
+            {
+                float cardDistance = 1.2f;
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+
+                iTween.MoveTo(cards[i].gameObject, new Vector2(cardDistance * (i - (size / 2)) + 0, 0), 1f);
+                cards[i].Show();
             }
         }
 

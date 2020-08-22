@@ -17,7 +17,7 @@ namespace Game
         public GameObject text;
 
         //버튼
-        public Button start, pass;
+        public Button start, pass, cancel, submit;
 
         //로딩중인가
         public bool isLoading = true;
@@ -33,6 +33,16 @@ namespace Game
         public void PassClick()
         {
             turn?.PassClick();
+        }
+
+        public void CancelClick()
+        {
+            turn?.CancelClick();
+        }
+
+        public void SubmitClick()
+        {
+            turn?.SubmitClick();
         }
 
         /// <summary>
@@ -79,7 +89,10 @@ namespace Game
             //누구 차례인지 버튼에서 글자바꿔주고 비활성화 관리
             if (turn?.GetNowTurn() is Player now)
             {
-                pass.interactable = !now.isHouse; //버튼 활성화 비활성화
+                //버튼 활성화 비활성화
+                pass.interactable = !now.isHouse;
+                cancel.interactable = !now.isHouse;
+                submit.interactable = turn.IsCanSubmit();
                 pass.GetComponentInChildren<Text>().text = now.name; //글자 변경
 
                 //낼 수 없는 카드 검정 및 차례 아니면 검정
@@ -90,6 +103,7 @@ namespace Game
             if (isLoading)
             {
                 pass.interactable = false;
+                cancel.interactable = false;
                 pass.GetComponentInChildren<Text>().text = "Loading...";
             }
 
@@ -102,7 +116,7 @@ namespace Game
                 {
                     if (!clickedCard.owner.isHouse && turn.GetNowTurn() == clickedCard.owner)
                     {
-                        turn?.TrashCard(clickedCard.owner, clickedCard);
+                        turn?.SelectCard(clickedCard.owner, clickedCard);
                     }
                 }
             }

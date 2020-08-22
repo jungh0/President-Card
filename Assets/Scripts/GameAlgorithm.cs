@@ -1,10 +1,13 @@
 ﻿using Game;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameAlgorithm : Turn
 {
-    private Card nowStatus = null;
+    private List<Card> nowStatus = null;
+    private List<Card> nowStatusTmp = null;
+
     private int passCnt = 0;
 
     public new void Initialise()
@@ -12,26 +15,201 @@ public class GameAlgorithm : Turn
 
     }
 
+    public bool IsCanSubmit()
+    {
+        return nowStatusTmp != null;
+    }
+
+
+    public void CheckDisable(Player now)
+    {
+        if(nowStatus == null)
+        {
+            if (nowStatusTmp?.Count > 0)
+            {
+                nowStatusTmp.Sort((a, b) =>
+                {
+                    if ((int)a.Rank > (int)b.Rank)
+                    {
+                        return 1;
+                    }
+                    else if ((int)a.Rank < (int)b.Rank)
+                    {
+                        return -1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+                );
+
+                if (nowStatusTmp?.Count == 1)
+                {
+                    foreach (var tmp in now.cards)
+                    {
+                        if (tmp.Rank != nowStatusTmp[0].Rank &&
+                            tmp.Rank != nowStatusTmp[0].Rank + 1 &&
+                            tmp.Rank != nowStatusTmp[0].Rank - 1)
+                        {
+                            tmp.Disable(true);
+                        }
+                    }
+                }
+                else if (nowStatusTmp?.Count > 1)
+                {
+                    bool same = nowStatusTmp[0].Rank == nowStatusTmp[1].Rank;
+
+                    if (same)
+                    {
+                        foreach (var tmp in now.cards)
+                        {
+                            if (tmp.Rank != nowStatusTmp[0].Rank)
+                            {
+                                tmp.Disable(true);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var tmp in now.cards)
+                        {
+                            if (tmp.Rank != nowStatusTmp[0].Rank - 1 &&
+                                tmp.Rank != nowStatusTmp[nowStatusTmp.Count - 1].Rank + 1)
+                            {
+                                tmp.Disable(true);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        else
+        {
+            var nowCnt = nowStatus.Count;
+            if (nowCnt == 1 && nowStatusTmp == null)
+            {
+                foreach (var tmp in now.cards)
+                {
+                    if (tmp.Rank <= nowStatus[0].Rank)
+                    {
+                        tmp.Disable(true);
+                    }
+                }
+            }
+            else if (nowCnt > 1)
+            {
+                bool same = nowStatus[0].Rank == nowStatus[1].Rank;
+                List<Card> on = new List<Card>();
+
+                if (same)
+                {
+                    for (int a = 0; a <= now.cards.Count - nowCnt; a++)
+                    {
+                        var tmp = now.cards[a];
+                        if (tmp.Rank > nowStatus[0].Rank)
+                        {
+                            bool allTrue = true;
+                            for (int b = 1; b < nowCnt; b++)
+                            {
+                                var tmp2 = now.cards[a+b];
+                                if (tmp.Rank != tmp2.Rank)
+                                {
+                                    allTrue = false;
+                                    break;
+                                }
+                            }
+                            if (allTrue)
+                            {
+                                on.Add(tmp);
+                            }
+                        }
+                    }
+
+                    foreach(var tmp3 in now.cards)
+                    {
+                        if (!on.Contains(tmp3))
+                        {
+                            tmp3.Disable(true);
+                        }
+                    }
+                }
+                else
+                {
+                    for (int a = 0; a <= now.cards.Count - nowCnt; a++)
+                    {
+                        var tmp = now.cards[a];
+                        if (tmp.Rank > nowStatus[nowStatus.Count-1].Rank)
+                        {
+                            int trueCnt = 0;
+                            var tmpRank = tmp.Rank;
+
+                            for (int b = a + 1; b < now.cards.Count - nowCnt; b++)
+                            {
+                                var tmp2 = now.cards[b];
+                                if (tmpRank + 1 == tmp2.Rank)
+                                {
+                                    trueCnt++;
+                                    tmpRank++;
+
+                                    if (trueCnt == nowCnt)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (trueCnt == nowCnt)
+                            {
+                                on.Add(tmp);
+                            }
+                        }
+                    }
+
+                    foreach (var tmp3 in now.cards)
+                    {
+                        if (!on.Contains(tmp3))
+                        {
+                            tmp3.Disable(true);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (var tmp in now.cards)
+                {
+                    tmp.Disable(true);
+                }
+            }
+        }
+
+        if(nowStatusTmp != null)
+        {
+            foreach (var tmp in nowStatusTmp)
+            {
+                tmp.Disable(false);
+            }
+        }
+        
+
+    }
+
     public void MakeBlackCard(Player now)
     {
-        now.CardDisable(true);
+        now.AllCardDisable(true);
 
         //현재 턴인 사람 뺴고 검정 반투명
         foreach (var tmp in this.GetTotalPlayer())
         {
-            tmp.CardDisable(tmp != now);
+            tmp.AllCardDisable(tmp != now);
         }
 
         //내 카드중에 낼수없는데 반투명
         if (!now.isHouse)
         {
-            foreach (var tmp in now.cards)
-            {
-                if (nowStatus != null && tmp.Rank <= nowStatus.Rank)
-                {
-                    tmp.Disable(true);
-                }
-            }
+            CheckDisable(now);
         }
     }
 
@@ -46,6 +224,82 @@ public class GameAlgorithm : Turn
         StartCoroutine(AI());
     }
 
+    public void CancelClick()
+    {
+        if (GetNowTurn() is Player p)
+        {
+            if (!p.isHouse)
+            {
+                nowStatusTmp = null;
+                foreach (var tmp in p.cards)
+                {
+                    tmp.Disable(false);
+                }
+                GetNowTurn().SortCard();
+            }
+        }  
+    }
+
+    public void SubmitClick()
+    {
+        var now = GetNowTurn();
+        var deck = now.cards;
+
+        SoundManager.instance.PlaySound("soundCard2");
+        passCnt = 0;
+        foreach (var tmp in nowStatusTmp)
+        {
+            deck.Remove(tmp);
+        }
+        trash.SortCardTrash(nowStatusTmp);
+        nowStatus = nowStatusTmp;
+        nowStatusTmp = null;
+        now.SortCard();
+        
+        if (now.cards.Count == 0)
+        {
+            this.AddWinner(now);
+        }
+
+        //this.NextTurn();
+        //StartCoroutine(AI());
+    }
+
+    public void SelectCard(Player p, Card wantTrash)
+    {
+        if ((!nowStatusTmp?.Contains(wantTrash) ?? true) && !wantTrash.isDisable)
+        {
+            if (nowStatusTmp == null)
+            {
+                nowStatusTmp = new List<Card>();
+            }
+
+            if(nowStatus == null)
+            {
+                iTween.MoveAdd(wantTrash.gameObject, new Vector2(0, 1), 1f);
+                nowStatusTmp.Add(wantTrash);
+            }
+            else
+            {
+                var nowCnt = nowStatus.Count;
+                for (int t = 0; t <= p.cards.Count - nowCnt; t++)
+                {
+                    if(p.cards[t] == wantTrash)
+                    {
+                        for (int tt = 0; tt < nowCnt; tt++)
+                        {
+                            iTween.MoveAdd(p.cards[t + tt].gameObject, new Vector2(0, 1), 1f);
+                            nowStatusTmp.Add(p.cards[t+tt]);
+                        }
+                    }
+                }
+            }
+
+            
+        }
+    }
+
+
     /// <summary>
     /// 카드 제출
     /// </summary>
@@ -55,7 +309,7 @@ public class GameAlgorithm : Turn
     {
         CheckPass();
 
-        if (nowStatus == null || wantTrash.Rank > nowStatus.Rank)
+       /* if (nowStatus == null || wantTrash.Rank > nowStatus.Rank)
         {
             var deck = p.cards;
             if (deck.Contains(wantTrash))
@@ -75,7 +329,7 @@ public class GameAlgorithm : Turn
             {
                 this.AddWinner(p);
             }
-        }
+        }*/
 
     }
 
@@ -123,7 +377,7 @@ public class GameAlgorithm : Turn
             {
                 if (p.isHouse)
                 {
-                    var available = p.PlayCard(nowStatus);
+                    /*var available = p.PlayCard(nowStatus);
                     if (available != null)
                     {
                         TrashCard(this.GetNowTurn(), available);
@@ -134,7 +388,7 @@ public class GameAlgorithm : Turn
                         passCnt += 1;
                         this.NextTurn();
                         StartCoroutine(AI());
-                    }
+                    }*/
                 }
             }
         }
