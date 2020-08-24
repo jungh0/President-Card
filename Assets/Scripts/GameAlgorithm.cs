@@ -130,6 +130,7 @@ public class GameAlgorithm : Turn
                     }
                     else
                     {
+                        // 패스
                         SoundManager.instance.PlaySound("soundCard3");
                         passCnt += 1;
                         this.NextTurn();

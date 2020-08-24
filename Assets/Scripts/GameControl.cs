@@ -169,7 +169,6 @@ namespace Game
         private IEnumerator InitialDeal()
         {
             yield return new WaitForSeconds(1);
-            //SoundManager.instance.PlaySound("soundShuffle");
             int n = 10;
             while (n > 0)
             {
@@ -183,42 +182,6 @@ namespace Game
             isLoading = false;
         }
 
-        private IEnumerator GameOver(int status)
-        {
-            yield return new WaitForSeconds(.5f);
-            string playerStatus = "";
-
-            if (status == -1) playerStatus = "You Lose!";
-            else if (status == -2) playerStatus = "You Win!";
-            else if (status == -3) playerStatus = "Draw!";
-        }
-
-
-        //private IEnumerator HouseMove()
-        //{
-        //    while (house1.HouseHitting())
-        //    {
-        //        deck.Deal(house1);
-        //        yield return new WaitForSeconds(1f);
-        //    }
-        //    int houseVal = house1.GetValue();
-        //    int playerVal = player.GetValue();
-        //    if (houseVal == -2 || (houseVal > playerVal)) StartCoroutine(GameOver(-1));// house gets blackjack or greater than player, the player loses 
-        //    else if (houseVal == -1 || (houseVal < playerVal)) StartCoroutine(GameOver(-2)); //bust for less than player, player wins 
-        //    else if (houseVal == playerVal) StartCoroutine(GameOver(-3)); ; //tie 
-        //}
-
-        //public void RestartPressed()
-        //{
-        //    deck.Clear();
-        //    player.Clear();
-        //    house1.Clear();
-
-        //    deck.Populate();
-        //    deck.Shuffle();
-        //    currentPhase = dealPhase;
-        //    DealCards();
-        //}
 
 
     }
