@@ -17,7 +17,7 @@ namespace Game
         public GameObject text;
 
         //버튼
-        public Button start, pass;
+        public Button start, pass, cancel, submit;
 
         //로딩중인가
         public bool isLoading = true;
@@ -33,6 +33,16 @@ namespace Game
         public void PassClick()
         {
             turn?.PassClick();
+        }
+
+        public void CancelClick()
+        {
+            turn?.CancelClick();
+        }
+
+        public void SubmitClick()
+        {
+            turn?.SubmitClick();
         }
 
         /// <summary>

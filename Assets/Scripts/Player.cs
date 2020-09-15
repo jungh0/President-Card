@@ -1,4 +1,7 @@
 using UnityEngine;
+using Game;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Game
 {
@@ -32,6 +35,36 @@ namespace Game
                 }
             }
             return null;
+        }
+
+        public void SortCardTrash(List<Card> cards)
+        {
+
+            cards.Sort((a, b) =>
+            {
+                if ((int)a.Rank > (int)b.Rank)
+                {
+                    return 1;
+                }
+                else if ((int)a.Rank < (int)b.Rank)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 0;
+                }
+            });
+
+            int size = cards.Count;
+            for (int i = 0; i < size; i++)
+            {
+                float cardDistance = 1.2f;
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+
+                iTween.MoveTo(cards[i].gameObject, new Vector2(cardDistance * (i - (size / 2)) + 0, 0), 1f);
+                cards[i].Show();
+            }
         }
 
         public void CardDisable(bool status)

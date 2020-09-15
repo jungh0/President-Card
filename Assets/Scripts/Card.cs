@@ -23,6 +23,7 @@ namespace Game
         private SpriteRenderer _spriteRenderer;
         public bool isFaceUp;
         public Player owner;
+        public bool isDisabled = false;
 
         public void Initialise(Suits s, Ranks r, Vector2 pos, Quaternion rot, Sprite cardFace)
         {
@@ -49,6 +50,7 @@ namespace Game
         /// <param name="status"></param>
         public void Disable(bool status)
         {
+            isDisabled = status;
             if (status)
             {
                 _spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f, 1f);
