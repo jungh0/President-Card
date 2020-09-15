@@ -13,6 +13,7 @@ namespace Game
         public bool isTrash;
         public string name;
         public GameObject text;
+        private int trashOrder = 1;
 
         public void Initialise(float x, float y, bool houseOrPlayer, bool isTrash, string name, GameObject text)
         {
@@ -37,30 +38,13 @@ namespace Game
             return null;
         }
 
-        public void SortCardTrash(List<Card> cards)
+        public void CardTrash(List<Card> cards)
         {
-
-            cards.Sort((a, b) =>
-            {
-                if ((int)a.Rank > (int)b.Rank)
-                {
-                    return 1;
-                }
-                else if ((int)a.Rank < (int)b.Rank)
-                {
-                    return -1;
-                }
-                else
-                {
-                    return 0;
-                }
-            });
-
             int size = cards.Count;
             for (int i = 0; i < size; i++)
             {
                 float cardDistance = 1.2f;
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = trashOrder++;
 
                 iTween.MoveTo(cards[i].gameObject, new Vector2(cardDistance * (i - (size / 2)) + 0, 0), 1f);
                 cards[i].Show();
@@ -125,7 +109,12 @@ namespace Game
         public void Add(Card c)
         {
             base.Add(c, this);
-            SortCard();
+
+            if (!isTrash)
+            {
+                SortCard();
+            }
+            
         }
 
     }

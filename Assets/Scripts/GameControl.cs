@@ -32,17 +32,27 @@ namespace Game
         /// </summary>
         public void PassClick()
         {
-            turn?.PassClick();
+            if (pass.IsInteractable())
+            {
+                turn?.PassClick();
+            }
+            
         }
 
         public void CancelClick()
         {
-            turn?.CancelClick();
+            if (cancel.IsInteractable())
+            {
+                turn?.CancelClick();
+            }
         }
 
         public void SubmitClick()
         {
-            turn?.SubmitClick();
+            if (submit.IsInteractable())
+            {
+                turn?.SubmitClick();
+            }
         }
 
         /// <summary>
@@ -89,21 +99,24 @@ namespace Game
             //누구 차례인지 버튼에서 글자바꿔주고 비활성화 관리
             if (turn?.GetNowTurn() is Player now)
             {
-                pass.interactable = !now.isHouse; //버튼 활성화 비활성화
-                pass.GetComponentInChildren<Text>().text = now.name; //글자 변경
+                submit.interactable = turn?.SelectedCardCanSubmit(now) ?? false; //버튼 활성화 비활성화
+                pass.interactable = !now.isHouse; //pass 버튼 활성화 비활성화
+                cancel.interactable = turn?.CanCancel(now) ?? false;
 
-                //낼 수 없는 카드 검정 및 차례 아니면 검정
                 turn?.MakeBlackCard(now);
+                turn?.CheckPass();
             }
 
             //로딩일때 버튼
             if (isLoading)
             {
-                pass.interactable = false;
-                pass.GetComponentInChildren<Text>().text = "Loading...";
+                pass.interactable = false; //pass 버튼 비활성화
+                submit.interactable = false; //submit 버튼 비활성화
+                cancel.interactable = false; //cancel 버튼 비활성화
+                //pass.GetComponentInChildren<Text>().text = "Loading...";
             }
 
-            //플레이어가 클릭한거 제출
+            //플레이어가 클릭한거 선택
             if (Input.GetMouseButtonDown(0) && !isLoading)
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -112,7 +125,7 @@ namespace Game
                 {
                     if (!clickedCard.owner.isHouse && turn.GetNowTurn() == clickedCard.owner)
                     {
-                        turn?.TrashCard(clickedCard.owner, clickedCard);
+                        turn?.SelectCard(clickedCard.owner, clickedCard);
                     }
                 }
             }

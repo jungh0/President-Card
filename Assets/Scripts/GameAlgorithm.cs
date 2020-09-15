@@ -14,8 +14,10 @@ public class GameAlgorithm : Turn
     private int count = -1;
     private Card nowCard = null;
 
-
-    private List<Card> nowSelectedCard = null;
+    private int statusSelected = -1;
+    private int countSelected = -1;
+    private Card nowCardSelectedLow = null;
+    private List<Card> nowCardSelected = null;
 
     private int passCnt = 0;
 
@@ -24,108 +26,118 @@ public class GameAlgorithm : Turn
 
     }
 
-    public void MakeBlackCard(Player now)
+    private void SetSelected()
     {
-        //now.CardDisable(true);
-
-        //현재 턴인 사람 뺴고 검정 반투명
-        foreach (var tmp in this.GetTotalPlayer())
-        {
-            tmp.CardDisable(tmp != now);
-        }
-
-        //내 카드중에 낼수없는데 반투명
-        if (!now.isHouse)
-        {
-            now.CardDisable(true);
-
-            for (int a = 0; a < now.cards.Count; a++)
-            {
-                var tmp = now.cards[a];
-
-                if (nowCard != null && tmp.Rank > nowCard.Rank)
-                {
-                    tmp.Disable(false);
-                }
-
-                //작은 경우
-                /*if (nowCard != null && tmp.Rank > nowCard.Rank)
-                {
-                    tmp.Disable(false);
-                }
-
-                //1경우
-                if (nowCard != null && tmp.Rank > nowCard.Rank && status == 1 &&  a + count <= now.cards.Count)
-                {
-                    for (int b = 0; b < count; b++)
-                    {
-                        if(now.cards[b].Rank != tmp.Rank)
-                        {
-                            tmp.Disable(true);
-                            break;
-                        }
-                    }
-                }
-
-                //2경우
-                if (nowCard != null && tmp.Rank > nowCard.Rank && status == 2 && a + count <= now.cards.Count)
-                {
-                    var tmpRank = tmp.Rank;
-                    
-                    for (int b = 0; b < count; b++)
-                    {
-                        if (now.cards[b].Rank != tmp.Rank && now.cards[b].Suit == tmp.Suit)
-                        {
-                            tmp.Disable(true);
-                            break;
-                        }
-                        tmpRank += 1;
-                    }
-                }*/
-
-
-                //내가 이겼을때 같은 경우
-                if (nowCard == null)
-                {
-                    now.CardDisable(false);
-                }
-
-            }
-
-        }
+        status = statusSelected;
+        count = countSelected;
+        nowCard = nowCardSelectedLow;
     }
 
-    public bool IsExist(Player now, Card.Ranks c1)
+    private void ResetSelected()
     {
-        for (int a = 0; a < now.cards.Count; a++)
+        statusSelected = -1;
+        countSelected = -1;
+        nowCardSelectedLow = null;
+        nowCardSelected = null;
+    }
+
+    private void ResetCard()
+    {
+        status = -1;
+        count = -1;
+        nowCard = null;
+    }
+
+    public bool CanCancel(Player p)
+    {
+        return !p.isHouse && nowCardSelected?.Count > 0;
+    }
+
+    public bool SelectedCardCanSubmit(Player p)
+    {
+        if(!p.isHouse && nowCardSelected != null && (nowCard == null || nowCardSelected[0].Rank > nowCard?.Rank))
         {
-            if (now.cards[a].Rank == c1)
+            if (nowCardSelected?.Count == 1 && (count == -1 || count == 1))
             {
-                now.cards[a].Disable(false);
+                statusSelected = 0;
+                countSelected = 1;
+                nowCardSelectedLow = nowCardSelected[0];
                 return true;
+            }
+            else if (nowCardSelected?.Count > 1 && (count == -1 || count == nowCardSelected?.Count))
+            {
+                SortCard(nowCardSelected);
+                bool isSameRank = true;
+                bool isSameSuit = true;
+                bool isContinuous = true;
+                Card.Ranks tmpRank = nowCardSelected[0].Rank;
+                Card.Suits tmpSuit = nowCardSelected[0].Suit;
+                Card.Ranks tmpstartRank = nowCardSelected[0].Rank;
+                foreach (var tmp in nowCardSelected)
+                {
+                    if (tmpRank != tmp.Rank)
+                    {
+                        isSameRank = false;
+                    }
+                    if (tmpSuit != tmp.Suit)
+                    {
+                        isSameSuit = false;
+                    }
+                    if (tmpstartRank != tmp.Rank)
+                    {
+                        isContinuous = false;
+                    }
+                    tmpstartRank++;
+                }
+
+                //같은거 인지 확인
+                if (isSameRank)
+                {
+                    statusSelected = 1;
+                    countSelected = nowCardSelected.Count;
+                    nowCardSelectedLow = nowCardSelected[0];
+                    return true;
+                }
+
+                //연속된거 인지 확인
+                else if (isSameSuit && isContinuous && nowCardSelected?.Count > 2)
+                {
+                    statusSelected = 2;
+                    countSelected = nowCardSelected.Count;
+                    nowCardSelectedLow = nowCardSelected[0];
+                    return true;
+                }
             }
         }
         return false;
     }
 
-
-    public bool IsExist(Player now,Card c1, Card c2)
+    private void SortCard(List<Card> cards)
     {
-        bool found1 = false;
-        bool found2 = false;
-
-        for (int a = 0; a < now.cards.Count; a++)
+        cards.Sort((a, b) =>
         {
-            if(now.cards[a] == c1)
+            if ((int)a.Rank > (int)b.Rank)
             {
-                found1 = true;
+                return 1;
             }
-            if (now.cards[a] == c2)
+            else if ((int)a.Rank < (int)b.Rank)
             {
-                found2 = true;
+                return -1;
             }
+            else
+            {
+                return 0;
+            }
+        });
+    }
+
+    public void MakeBlackCard(Player now)
+    {
+        //현재 턴인 사람 뺴고 검정 반투명
+        foreach (var tmp in this.GetTotalPlayer())
+        {
+            tmp.CardDisable(tmp != now);
         }
-        return found1 && found2;
     }
 
     public void CancelClick()
@@ -134,7 +146,7 @@ public class GameAlgorithm : Turn
         {
             if (!p.isHouse)
             {
-                nowSelectedCard = null;
+                nowCardSelected = null;
                 foreach (var tmp in p.cards)
                 {
                     tmp.Disable(false);
@@ -146,25 +158,34 @@ public class GameAlgorithm : Turn
 
     public void SubmitClick()
     {
-        var now = GetNowTurn();
-        var deck = now.cards;
-
-        SoundManager.instance.PlaySound("soundCard2");
-        passCnt = 0;
-        foreach (var tmp in nowSelectedCard)
+        if(nowCardSelected?.Count > 0)
         {
-            deck.Remove(tmp);
-        }
-        trash.SortCardTrash(nowSelectedCard);
-        nowCard = nowSelectedCard[0];
-        nowSelectedCard = null;
-        now.SortCard();
+            SoundManager.instance.PlaySound("soundCard2");
 
-        if (now.cards.Count == 0)
-        {
-            this.AddWinner(now);
-        }
+            var now = GetNowTurn();
+            var deck = now.cards;
+            foreach (var tmp in nowCardSelected)
+            {
+                deck.Remove(tmp);
+                trash.Add(tmp);
+            }
+            SortCard(nowCardSelected);
+            trash.CardTrash(nowCardSelected);
 
+
+            if (now.cards.Count == 0)
+            {
+                AddWinner(now);
+            }
+            now.SortCard();
+
+            SetSelected();
+            ResetSelected();
+            passCnt = 0;
+
+            NextTurn();
+            StartCoroutine(AI());
+        }
     }
 
     /// <summary>
@@ -172,9 +193,11 @@ public class GameAlgorithm : Turn
     /// </summary>
     public void PassClick()
     {
+        GetNowTurn().SortCard();
         SoundManager.instance.PlaySound("soundCard3");
+        ResetSelected();
         passCnt += 1;
-        this.NextTurn();
+        NextTurn();
         StartCoroutine(AI());
     }
 
@@ -183,48 +206,22 @@ public class GameAlgorithm : Turn
     /// </summary>
     /// <param name="p">제출하고자하는 플레이어</param>
     /// <param name="wantTrash">제출하고자하는 카드</param>
-    public void TrashCard(Player p, Card wantTrash)
+    public void SelectCard(Player p, Card wantTrash)
     {
-        CheckPass();
-
         if (!wantTrash.isDisabled)
         {
-            if(!nowSelectedCard?.Contains(wantTrash) ?? true)
+            if(!nowCardSelected?.Contains(wantTrash) ?? true)
             {
-                if (nowSelectedCard == null)
+                if (nowCardSelected == null)
                 {
-                    nowSelectedCard = new List<Card>();
+                    nowCardSelected = new List<Card>();
                 }
-                nowSelectedCard.Add(wantTrash);
-                iTween.MoveAdd(wantTrash.gameObject, new Vector2(0, 1), 1f);
-            }
-            
+                nowCardSelected.Add(wantTrash);
 
-            
+                var position = wantTrash.gameObject.transform.position;
+                iTween.MoveTo(wantTrash.gameObject, new Vector2(position.x, position.y + 1), 1f);
+            }
         }
-
-        /*if (nowCard == null || wantTrash.Rank > nowCard.Rank)
-        {
-            var deck = p.cards;
-            if (deck.Contains(wantTrash))
-            {
-                SoundManager.instance.PlaySound("soundCard2");
-                passCnt = 0;
-                deck.Remove(wantTrash);
-                trash.Add(wantTrash);
-                nowCard = wantTrash;
-                p.SortCard();
-                this.NextTurn();
-                StartCoroutine(AI());
-            }
-
-            //이긴사람 list 추가
-            if (p.cards.Count == 0)
-            {
-                this.AddWinner(p);
-            }
-        }*/
-
     }
 
     /// <summary>
@@ -233,12 +230,10 @@ public class GameAlgorithm : Turn
     public void CheckPass()
     {
         //Debug.Log($"{passCnt + 1} {turn.TotalPlayer()}");
-        if (passCnt + 1 >= this.NowPlayerCount())
+        if (passCnt + 1 >= NowPlayerCount())
         {
-            nowCard = null;
-            status = -1;
-            count = -1;
-            passCnt = 0;
+            ResetCard();
+
             foreach (var tmp in trash.cards.ToArray())
             {
                 trash.cards.Remove(tmp);
@@ -246,8 +241,6 @@ public class GameAlgorithm : Turn
             }
         }
     }
-
-
 
     /// <summary>
     /// AI 함수
@@ -259,8 +252,6 @@ public class GameAlgorithm : Turn
 
         try
         {
-            CheckPass();
-
             var p = this.GetNowTurn();
             if (p.cards.Count == 0)
             {
@@ -273,19 +264,82 @@ public class GameAlgorithm : Turn
             {
                 if (p.isHouse)
                 {
-                    var available = p.PlayCard(nowCard);
-                    if (available != null)
+                    ResetSelected();
+
+                    if (nowCard != null)
                     {
-                        TrashCard(this.GetNowTurn(), available);
+                        if (status == 0)
+                        {
+                            List<Card> tmpNeed = new List<Card>();
+                            foreach (var tmp in p.cards)
+                            {
+                                if (tmp.Rank > nowCard.Rank)
+                                {
+                                    statusSelected = status;
+                                    countSelected = count;
+                                    nowCardSelectedLow = tmp;
+                                    nowCardSelected = new List<Card> { tmp };
+                                    break;
+                                }
+                            }
+                        }
+                        else if (status == 1)
+                        {
+                            int need = count;
+                            List<Card> tmpNeed = new List<Card>();
+                            Card tmpCard = null;
+
+                            foreach (var tmp in p.cards)
+                            {
+                                if (tmp.Rank <= nowCard.Rank)
+                                {
+                                    continue;
+                                }
+
+                                if (tmpCard == null || tmpCard.Rank == tmp.Rank)
+                                {
+                                    tmpCard = tmp;
+                                    tmpNeed.Add(tmp);
+                                }
+                                else
+                                {
+                                    tmpNeed = new List<Card>();
+                                    tmpCard = null;
+                                }
+
+                                if (tmpNeed.Count == need)
+                                {
+                                    statusSelected = status;
+                                    countSelected = count;
+                                    nowCardSelectedLow = tmp;
+                                    nowCardSelected = tmpNeed;
+                                    break;
+                                }
+                            }
+                        }
+                        else if (status == 2)
+                        {
+
+                        }
                     }
                     else
                     {
-                        // 패스
-                        SoundManager.instance.PlaySound("soundCard3");
-                        passCnt += 1;
-                        this.NextTurn();
-                        StartCoroutine(AI());
+                        statusSelected = 0;
+                        countSelected = 1;
+                        nowCardSelectedLow = p.cards[0];
+                        nowCardSelected = new List<Card> { p.cards[0] };
                     }
+
+                    if(nowCardSelected?.Count > 0)
+                    {
+                        SubmitClick();
+                    }
+                    else
+                    {
+                        PassClick();
+                    }
+
+                   
                 }
             }
         }
