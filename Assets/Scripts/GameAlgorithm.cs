@@ -212,6 +212,7 @@ public class GameAlgorithm : Turn
         {
             if(!nowCardSelected?.Contains(wantTrash) ?? true)
             {
+
                 if (nowCardSelected == null)
                 {
                     nowCardSelected = new List<Card>();
@@ -219,7 +220,17 @@ public class GameAlgorithm : Turn
                 nowCardSelected.Add(wantTrash);
 
                 var position = wantTrash.gameObject.transform.position;
-                iTween.MoveTo(wantTrash.gameObject, new Vector2(position.x, position.y + 1), 1f);
+                iTween.MoveTo(wantTrash.gameObject, new Vector2(position.x, -2.5f), 1f);
+            }
+            else
+            {
+                nowCardSelected.Remove(wantTrash);
+                if (nowCardSelected.Count == 0)
+                {
+                    ResetSelected();
+                }
+                var position = wantTrash.gameObject.transform.position;
+                iTween.MoveTo(wantTrash.gameObject, new Vector2(position.x, -3.5f), 1f);
             }
         }
     }
@@ -268,7 +279,7 @@ public class GameAlgorithm : Turn
 
                     if (nowCard != null)
                     {
-                        if (status == 0)
+                        if (status == 0) // 1개
                         {
                             List<Card> tmpNeed = new List<Card>();
                             foreach (var tmp in p.cards)
@@ -283,7 +294,7 @@ public class GameAlgorithm : Turn
                                 }
                             }
                         }
-                        else if (status == 1)
+                        else if (status == 1) // 같은거
                         {
                             int need = count;
                             List<Card> tmpNeed = new List<Card>();
@@ -317,12 +328,49 @@ public class GameAlgorithm : Turn
                                 }
                             }
                         }
-                        else if (status == 2)
+                        else if (status == 2) // 연속된거
                         {
+                            int need = count;
+                            List<Card> tmpNeed = new List<Card>();
+                            Card tmpCard = null;
 
+                            List<Card.Suits> suits = new List<Card.Suits> { Card.Suits.Club, Card.Suits.Diamond, Card.Suits.Heart, Card.Suits.Spade };
+
+                            foreach (var suit in suits)
+                            {
+                                tmpNeed = new List<Card>();
+                                tmpCard = null;
+
+                                foreach (var tmp in p.cards)
+                                {
+                                    if (tmp.Rank <= nowCard.Rank || tmp.Suit != suit)
+                                    {
+                                        continue;
+                                    }
+
+                                    if (tmpCard != null && tmpCard.Rank + 1 != tmp.Rank)
+                                    {
+                                        tmpNeed = new List<Card>();
+                                    }
+
+                                    tmpCard = tmp;
+                                    tmpNeed.Add(tmp);
+
+                                    if (tmpNeed.Count == need)
+                                    {
+                                        statusSelected = status;
+                                        countSelected = count;
+                                        nowCardSelectedLow = tmp;
+                                        nowCardSelected = tmpNeed;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            
                         }
                     }
-                    else
+                    else // AI가 처음낼 때
                     {
                         statusSelected = 0;
                         countSelected = 1;
@@ -349,4 +397,5 @@ public class GameAlgorithm : Turn
         }
     }
 
+  
 }

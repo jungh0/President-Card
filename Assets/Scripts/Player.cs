@@ -96,7 +96,7 @@ namespace Game
 
                 if (isHouse && !isTrash)
                 {
-                    cards[i].Hide();
+                    cards[i].Show();
                 }
                 else
                 {
