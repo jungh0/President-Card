@@ -155,9 +155,9 @@ namespace Game
         private void InitPlayers()
         {
             MakePlayer(x: 0, y: -3.5f, isHouse: false, playerName: "player", buttonName: "PASS");
-            MakePlayer(x: -7f, y: 4.8f, isHouse: true, playerName: "com1", buttonName: "com1's turn");
-            MakePlayer(x: 0, y: 4.8f, isHouse: true, playerName: "com2", buttonName: "com2's turn");
-            MakePlayer(x: 7f, y: 4.8f, isHouse: true, playerName: "com3", buttonName: "com3's turn");
+            MakePlayer(x: -7f, y: 3.8f, isHouse: true, playerName: "com1", buttonName: "com1's turn");
+            MakePlayer(x: 0, y: 3.8f, isHouse: true, playerName: "com2", buttonName: "com2's turn");
+            MakePlayer(x: 7f, y: 3.8f, isHouse: true, playerName: "com3", buttonName: "com3's turn");
             MakePlayer(x: 0, y: 0, isHouse: true, playerName: "trash", buttonName: "trash's turn", isTrash: true);
         }
 
