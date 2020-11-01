@@ -46,7 +46,7 @@ namespace Game
                 float cardDistance = 1.2f;
                 cards[i].GetComponent<SpriteRenderer>().sortingOrder = trashOrder++;
 
-                iTween.MoveTo(cards[i].gameObject, new Vector2(cardDistance * (i - (size / 2)) + 0, 0), 1f);
+                iTween.MoveTo(cards[i].gameObject, new Vector2(cardDistance * (i - (size / 2)) + 0, 0.65f), 1f);
                 cards[i].Show();
             }
         }
@@ -96,7 +96,7 @@ namespace Game
 
                 if (isHouse && !isTrash)
                 {
-                    cards[i].Show();
+                    cards[i].Hide();
                 }
                 else
                 {
