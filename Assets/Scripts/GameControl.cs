@@ -67,7 +67,7 @@ namespace Game
             start.gameObject.SetActive(false);
             pass.gameObject.SetActive(true);
             submit.gameObject.SetActive(true);
-            cancel.gameObject.SetActive(true);
+            //cancel.gameObject.SetActive(true);
 
             RealStart();
         }
@@ -106,6 +106,15 @@ namespace Game
             //누구 차례인지 버튼에서 글자바꿔주고 비활성화 관리
             if (turn?.GetNowTurn() is Player now)
             {
+                if (turn?.isSelected() ?? false)
+                {
+                    pass.GetComponentInChildren<Text>().text = "CANCEL";
+                }
+                else
+                {
+                    pass.GetComponentInChildren<Text>().text = "PASS";
+                }
+
                 submit.enabled = turn?.SelectedCardCanSubmit(now) ?? false; //버튼 활성화 비활성화
                 pass.enabled = !now.isHouse; //pass 버튼 활성화 비활성화
                 cancel.enabled = turn?.CanCancel(now) ?? false;
@@ -200,7 +209,7 @@ namespace Game
         private IEnumerator InitialDeal()
         {
             yield return new WaitForSeconds(1);
-            int n = 10;
+            int n = 13;
             while (n > 0)
             {
                 foreach (var tmp in turn.GetTotalPlayer())

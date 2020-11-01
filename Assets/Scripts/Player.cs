@@ -75,17 +75,23 @@ namespace Game
                     cardDistance = 0.3f;
                 }
 
+                float goLeft = 1.5f;
+                if (isHouse && !isTrash)
+                {
+                    goLeft = 0;
+                }
+
                 cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
 
                 if (!isTrash)
                 {
                     if (size / 2 <= i - 1)
                     {
-                        iTween.MoveTo(cards[i].gameObject, new Vector2(cardDistance * (i - (size / 2)) + xPos, yPos), 1f);
+                        iTween.MoveTo(cards[i].gameObject, new Vector2(cardDistance * (i - (size / 2)) + xPos- goLeft, yPos), 1f);
                     }
                     else
                     {
-                        iTween.MoveTo(cards[i].gameObject, new Vector2(-1 * cardDistance * ((size / 2) - i) + xPos, yPos), 1f);
+                        iTween.MoveTo(cards[i].gameObject, new Vector2(-1 * cardDistance * ((size / 2) - i) + xPos-goLeft, yPos), 1f);
                     }
                 }
                 else

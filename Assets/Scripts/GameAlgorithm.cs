@@ -26,6 +26,11 @@ public class GameAlgorithm : Turn
 
     }
 
+    public bool isSelected()
+    {
+        return (nowCardSelected?.Count ?? 0) > 0;
+    }
+
     private void SetSelected()
     {
         status = statusSelected;
@@ -193,12 +198,20 @@ public class GameAlgorithm : Turn
     /// </summary>
     public void PassClick()
     {
-        GetNowTurn().SortCard();
-        SoundManager.instance.PlaySound("soundCard3");
-        ResetSelected();
-        passCnt += 1;
-        NextTurn();
-        StartCoroutine(AI());
+        if (isSelected())
+        {
+            CancelClick();
+        }
+        else
+        {
+            GetNowTurn().SortCard();
+            SoundManager.instance.PlaySound("soundCard3");
+            ResetSelected();
+            passCnt += 1;
+            NextTurn();
+            StartCoroutine(AI());
+        }
+
     }
 
     /// <summary>
@@ -249,6 +262,7 @@ public class GameAlgorithm : Turn
             {
                 trash.cards.Remove(tmp);
                 iTween.MoveTo(tmp.gameObject, new Vector2(5, 0.65f), 1f);
+                tmp.Hide();
             }
         }
     }
