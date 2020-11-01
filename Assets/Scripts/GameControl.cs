@@ -65,6 +65,8 @@ namespace Game
             Sub.GetComponent<Camera>().enabled = false;
             start.enabled = false;
 
+          
+
             RealStart();
         }
 
@@ -99,9 +101,10 @@ namespace Game
             //누구 차례인지 버튼에서 글자바꿔주고 비활성화 관리
             if (turn?.GetNowTurn() is Player now)
             {
-                submit.interactable = turn?.SelectedCardCanSubmit(now) ?? false; //버튼 활성화 비활성화
-                pass.interactable = !now.isHouse; //pass 버튼 활성화 비활성화
-                cancel.interactable = turn?.CanCancel(now) ?? false;
+                submit.enabled = turn?.SelectedCardCanSubmit(now) ?? false; //버튼 활성화 비활성화
+                pass.enabled = !now.isHouse; //pass 버튼 활성화 비활성화
+                cancel.enabled = turn?.CanCancel(now) ?? false;
+
 
                 turn?.MakeBlackCard(now);
                 turn?.CheckPass();
@@ -110,9 +113,9 @@ namespace Game
             //로딩일때 버튼
             if (isLoading)
             {
-                pass.interactable = false; //pass 버튼 비활성화
-                submit.interactable = false; //submit 버튼 비활성화
-                cancel.interactable = false; //cancel 버튼 비활성화
+                pass.enabled = false; //pass 버튼 비활성화
+                submit.enabled = false; //submit 버튼 비활성화
+                cancel.enabled = false; //cancel 버튼 비활성화
                 //pass.GetComponentInChildren<Text>().text = "Loading...";
             }
 
