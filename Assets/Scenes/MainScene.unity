@@ -3833,7 +3833,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 646015234}
-        m_MethodName: RealStart
+        m_MethodName: StartAndChaneScreen
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
