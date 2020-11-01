@@ -64,8 +64,10 @@ namespace Game
             Main.GetComponent<Camera>().enabled = true;
             Sub.GetComponent<Camera>().enabled = false;
             start.enabled = false;
-
-          
+            start.gameObject.SetActive(false);
+            pass.gameObject.SetActive(true);
+            submit.gameObject.SetActive(true);
+            cancel.gameObject.SetActive(true);
 
             RealStart();
         }
@@ -84,6 +86,9 @@ namespace Game
 
         void Awake()
         {
+            pass.gameObject.SetActive(false);
+            submit.gameObject.SetActive(false);
+            cancel.gameObject.SetActive(false);
             Main.GetComponent<Camera>().enabled = false;
             Sub.GetComponent<Camera>().enabled = true;
         }
