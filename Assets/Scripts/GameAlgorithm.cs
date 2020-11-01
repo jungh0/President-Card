@@ -248,7 +248,7 @@ public class GameAlgorithm : Turn
             foreach (var tmp in trash.cards.ToArray())
             {
                 trash.cards.Remove(tmp);
-                iTween.MoveTo(tmp.gameObject, new Vector2(5, 0), 1f);
+                iTween.MoveTo(tmp.gameObject, new Vector2(5, 0.65f), 1f);
             }
         }
     }

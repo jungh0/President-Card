@@ -12,7 +12,7 @@ namespace Game
                 {
                     GameObject card = Instantiate(cardPrefab);
                     Card c = card.GetComponent<Card>() as Card;
-                    c.Initialise((Card.Suits)i, (Card.Ranks)j, new Vector2(5, 0), Quaternion.identity, faces[(i * 13) + j]);
+                    c.Initialise((Card.Suits)i, (Card.Ranks)j, new Vector2(5, 0.65f), Quaternion.identity, faces[(i * 13) + j]);
                     Add(c, null);
                 }
             }
