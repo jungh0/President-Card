@@ -1289,10 +1289,10 @@ MonoBehaviour:
   Canvas: {fileID: 263730672}
   CanvasTranform: {fileID: 0}
   text: {fileID: 7835076340585410168, guid: 2ea43f91037274b48ac039790761814a, type: 3}
-  start: {fileID: 1968165544}
   pass: {fileID: 982594880}
   cancel: {fileID: 1018811050}
   submit: {fileID: 1676311334}
+  start: {fileID: 2140239865}
   isLoading: 1
   turn: {fileID: 0}
   deckPrefab: {fileID: 6109096735870920523, guid: 299636f7276426048b79cc7343f4614f,
@@ -2328,10 +2328,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1283262183}
     m_Modifications:
-    - target: {fileID: 173658, guid: 298daca7decb9f846b5ff996ee97a495, type: 3}
-      propertyPath: m_Name
-      value: Canvas (2)
-      objectReference: {fileID: 0}
     - target: {fileID: 22438504, guid: 298daca7decb9f846b5ff996ee97a495, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -2407,6 +2403,10 @@ PrefabInstance:
     - target: {fileID: 22438504, guid: 298daca7decb9f846b5ff996ee97a495, type: 3}
       propertyPath: m_Pivot.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 173658, guid: 298daca7decb9f846b5ff996ee97a495, type: 3}
+      propertyPath: m_Name
+      value: Canvas (2)
       objectReference: {fileID: 0}
     - target: {fileID: 11438438, guid: 298daca7decb9f846b5ff996ee97a495, type: 3}
       propertyPath: m_Text
@@ -2659,7 +2659,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 10d15cb7511c1c344be11f23db69cc8e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fd4ea5e263c5f984c999c4b3ede695b6, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -4292,10 +4292,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 835682167}
     m_Modifications:
-    - target: {fileID: 173658, guid: 298daca7decb9f846b5ff996ee97a495, type: 3}
-      propertyPath: m_Name
-      value: Canvas (2)
-      objectReference: {fileID: 0}
     - target: {fileID: 22438504, guid: 298daca7decb9f846b5ff996ee97a495, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -4371,6 +4367,10 @@ PrefabInstance:
     - target: {fileID: 22438504, guid: 298daca7decb9f846b5ff996ee97a495, type: 3}
       propertyPath: m_Pivot.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 173658, guid: 298daca7decb9f846b5ff996ee97a495, type: 3}
+      propertyPath: m_Name
+      value: Canvas (2)
       objectReference: {fileID: 0}
     - target: {fileID: 11438438, guid: 298daca7decb9f846b5ff996ee97a495, type: 3}
       propertyPath: m_Text

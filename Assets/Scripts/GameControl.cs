@@ -17,7 +17,8 @@ namespace Game
         public GameObject text;
 
         //버튼
-        public Lean.Gui.LeanButton start, pass, cancel, submit;
+        public Lean.Gui.LeanButton pass, cancel, submit;
+        public Button start;
 
         //로딩중인가
         public bool isLoading = true;
