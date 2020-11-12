@@ -101,6 +101,7 @@ namespace Game
         {
             if (turn?.IsGameDone() ?? false)
             {
+                turn?.EndGame(deck);
                 RealStart();
             }
 

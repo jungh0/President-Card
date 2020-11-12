@@ -267,7 +267,13 @@ public class GameAlgorithm : Turn
         }
     }
 
-
+    public void EndGame(Deck deck)
+    {
+        foreach(var tmp in deck.cards)
+        {
+            iTween.MoveTo(tmp.gameObject, new Vector2(10f, 0f), 1f);
+        }
+    }
 
     /// <summary>
     /// AI 함수
