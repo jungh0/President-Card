@@ -253,7 +253,7 @@ public class GameAlgorithm : Turn
     /// </summary>
     public void CheckPass()
     {
-        //Debug.Log($"{passCnt + 1} {turn.TotalPlayer()}");
+        //Debug.Log($"{passCnt + 1} {NowPlayerCount()}");
         if (passCnt + 1 >= NowPlayerCount())
         {
             ResetCard();
@@ -266,6 +266,8 @@ public class GameAlgorithm : Turn
             }
         }
     }
+
+
 
     /// <summary>
     /// AI 함수

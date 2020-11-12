@@ -19,6 +19,18 @@ public class Turn : WinManager
         totalPlayer.Add(a);
     }
 
+    public int[] GetPlayerCardsCnt()
+    {
+        var total = new int[4] { 0, 0, 0, 0 };
+        var index = 0;
+        foreach (var tmp in this.GetTotalPlayer())
+        {
+            total[index] = tmp.cards.Count;
+            index++;
+        }
+        return total;
+    }
+
     public List<Player> GetTotalPlayer()
     {
         return totalPlayer;

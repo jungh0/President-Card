@@ -9,9 +9,11 @@ namespace Game
         /// <summary>
         /// pulbic
         /// </summary>
-        
+
         //텍스트
         public GameObject text;
+
+        public Text player1_cnt, player2_cnt, player3_cnt, status;
 
         //버튼
         public Lean.Gui.LeanButton pass, submit;
@@ -52,11 +54,9 @@ namespace Game
 
         public void SubmitClick()
         {
-            Debug.Log("aaaa");
-            turn?.SubmitClick();
             if (submit.IsInteractable())
             {
-                
+                turn?.SubmitClick();
             }
         }
 
@@ -86,12 +86,12 @@ namespace Game
 
         void Awake()
         {
-            RealStart();
+            //RealStart();
         }
 
         void Start()
         {
-            
+            RealStart();
         }
 
         /// <summary>
@@ -109,27 +109,35 @@ namespace Game
             {
                 if (turn?.isSelected() ?? false)
                 {
-                    //pass.GetComponentInChildren<Text>().text = "CANCEL";
+                    pass.GetComponentInChildren<Text>().text = "CANCEL";
                 }
                 else
                 {
-                    //pass.GetComponentInChildren<Text>().text = "PASS";
+                    pass.GetComponentInChildren<Text>().text = "PASS";
                 }
 
-                //submit.enabled = turn?.SelectedCardCanSubmit(now) ?? false; //버튼 활성화 비활성화
-                //pass.enabled = !now.isHouse; //pass 버튼 활성화 비활성화
+                submit.enabled = turn?.SelectedCardCanSubmit(now) ?? false; //버튼 활성화 비활성화
+                pass.enabled = !now.isHouse; //pass 버튼 활성화 비활성화
                 //cancel.enabled = turn?.CanCancel(now) ?? false;
 
 
                 turn?.MakeBlackCard(now);
                 turn?.CheckPass();
+
+                var remainCnt = turn?.GetPlayerCardsCnt();
+                player1_cnt.text = $"Player1 ( {remainCnt[1]} )";
+                player2_cnt.text = $"Player2 ( {remainCnt[2]} )";
+                player3_cnt.text = $"Player3 ( {remainCnt[3]} )";
+
+                status.text = $"{now.name}";
             }
 
             //로딩일때 버튼
             if (isLoading)
             {
-                //pass.enabled = false; //pass 버튼 비활성화
-                //submit.enabled = false; //submit 버튼 비활성화
+                pass.enabled = false; //pass 버튼 비활성화
+                submit.enabled = false; //submit 버튼 비활성화
+                status.text = $"Loading...";
                 //cancel.enabled = false; //cancel 버튼 비활성화
                 //pass.GetComponentInChildren<Text>().text = "Loading...";
             }
@@ -155,11 +163,11 @@ namespace Game
         /// </summary>
         private void InitPlayers()
         {
-            MakePlayer(x: 0, y: -3.5f, isHouse: false, playerName: "player", buttonName: "PASS");
-            MakePlayer(x: -7f, y: 3.8f, isHouse: true, playerName: "com1", buttonName: "com1's turn");
-            MakePlayer(x: 0, y: 3.8f, isHouse: true, playerName: "com2", buttonName: "com2's turn");
-            MakePlayer(x: 7f, y: 3.8f, isHouse: true, playerName: "com3", buttonName: "com3's turn");
-            MakePlayer(x: 0, y: 0, isHouse: true, playerName: "trash", buttonName: "trash's turn", isTrash: true);
+            MakePlayer(x: 0, y: -3.5f, isHouse: false, playerName: "player", buttonName: "Your turn");
+            MakePlayer(x: -7f, y: 6.8f, isHouse: true, playerName: "com1", buttonName: "Player1's turn");
+            MakePlayer(x: 0, y: 6.8f, isHouse: true, playerName: "com2", buttonName: "Player2's turn");
+            MakePlayer(x: 7f, y: 6.8f, isHouse: true, playerName: "com3", buttonName: "Player3's turn");
+            MakePlayer(x: 0, y: 0, isHouse: true, playerName: "trash", buttonName: "Trash's turn", isTrash: true);
         }
 
 

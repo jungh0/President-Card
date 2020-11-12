@@ -17,8 +17,14 @@ public class Main : MonoBehaviour
         
     }
 
+    private int clickCnt = 0;
     public void ChangeScene()
     {
-        SceneManager.LoadScene("RealGame");
+        if(clickCnt > 1)
+        {
+            SceneManager.LoadScene("RealGame");
+        }
+        clickCnt++;
+        
     }
 }
