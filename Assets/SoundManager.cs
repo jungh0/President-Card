@@ -15,7 +15,6 @@ public class SoundManager : MonoBehaviour
     public void PlaySound(string soundName)
     {
         GameObject.Find(soundName).GetComponent<AudioSource>().Play();
-
     }
 
 

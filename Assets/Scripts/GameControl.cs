@@ -6,31 +6,33 @@ namespace Game
 {
     public class GameControl : MonoBehaviour
     {
-        //카메라
-        public GameObject Main, Sub;
-
-        //캔버스 화면
-        public GameObject Canvas;
-        public Transform CanvasTranform;
-
+        /// <summary>
+        /// pulbic
+        /// </summary>
+        
         //텍스트
         public GameObject text;
 
         //버튼
-        public Lean.Gui.LeanButton pass, cancel, submit;
-        public Button start;
+        public Lean.Gui.LeanButton pass, submit;
 
-        //로딩중인가
-        public bool isLoading = true;
-
-        //게임알고리즘
-        public GameAlgorithm turn;
         public GameObject deckPrefab, playerPrefab;
-        private Deck deck;
 
         /// <summary>
-        /// 패스버튼 눌렀을때
+        /// private
         /// </summary>
+
+        //게임알고리즘
+        private GameAlgorithm turn;
+        private Deck deck;
+
+        //캔버스 화면
+        private GameObject Canvas;
+        private Transform CanvasTranform;
+
+        //로딩중인가
+        private bool isLoading = true;
+
         public void PassClick()
         {
             if (pass.IsInteractable())
@@ -40,19 +42,21 @@ namespace Game
             
         }
 
-        public void CancelClick()
+/*        public void CancelClick()
         {
             if (cancel.IsInteractable())
             {
                 turn?.CancelClick();
             }
-        }
+        }*/
 
         public void SubmitClick()
         {
+            Debug.Log("aaaa");
+            turn?.SubmitClick();
             if (submit.IsInteractable())
             {
-                turn?.SubmitClick();
+                
             }
         }
 
@@ -62,13 +66,8 @@ namespace Game
         public void StartAndChaneScreen()
         {
             CanvasTranform = Canvas.GetComponent<Transform>();
-            Main.GetComponent<Camera>().enabled = true;
-            Sub.GetComponent<Camera>().enabled = false;
-            start.enabled = false;
-            start.gameObject.SetActive(false);
             pass.gameObject.SetActive(true);
             submit.gameObject.SetActive(true);
-            //cancel.gameObject.SetActive(true);
 
             RealStart();
         }
@@ -87,11 +86,12 @@ namespace Game
 
         void Awake()
         {
-            pass.gameObject.SetActive(false);
-            submit.gameObject.SetActive(false);
-            cancel.gameObject.SetActive(false);
-            Main.GetComponent<Camera>().enabled = false;
-            Sub.GetComponent<Camera>().enabled = true;
+            RealStart();
+        }
+
+        void Start()
+        {
+            
         }
 
         /// <summary>
@@ -109,16 +109,16 @@ namespace Game
             {
                 if (turn?.isSelected() ?? false)
                 {
-                    pass.GetComponentInChildren<Text>().text = "CANCEL";
+                    //pass.GetComponentInChildren<Text>().text = "CANCEL";
                 }
                 else
                 {
-                    pass.GetComponentInChildren<Text>().text = "PASS";
+                    //pass.GetComponentInChildren<Text>().text = "PASS";
                 }
 
-                submit.enabled = turn?.SelectedCardCanSubmit(now) ?? false; //버튼 활성화 비활성화
-                pass.enabled = !now.isHouse; //pass 버튼 활성화 비활성화
-                cancel.enabled = turn?.CanCancel(now) ?? false;
+                //submit.enabled = turn?.SelectedCardCanSubmit(now) ?? false; //버튼 활성화 비활성화
+                //pass.enabled = !now.isHouse; //pass 버튼 활성화 비활성화
+                //cancel.enabled = turn?.CanCancel(now) ?? false;
 
 
                 turn?.MakeBlackCard(now);
@@ -128,9 +128,9 @@ namespace Game
             //로딩일때 버튼
             if (isLoading)
             {
-                pass.enabled = false; //pass 버튼 비활성화
-                submit.enabled = false; //submit 버튼 비활성화
-                cancel.enabled = false; //cancel 버튼 비활성화
+                //pass.enabled = false; //pass 버튼 비활성화
+                //submit.enabled = false; //submit 버튼 비활성화
+                //cancel.enabled = false; //cancel 버튼 비활성화
                 //pass.GetComponentInChildren<Text>().text = "Loading...";
             }
 
