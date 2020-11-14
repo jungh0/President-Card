@@ -16,7 +16,7 @@ public class WinManager : MonoBehaviour
     public void AddWinner(Player p)
     {
         whoWin.Add(p);
-        p.text.GetComponentInChildren<Text>().text = $"{whoWin.Count} 등!!!";
+        //p.text.GetComponentInChildren<Text>().text = $"{whoWin.Count} 등!!!";
     }
 
     public bool IsGameDone()

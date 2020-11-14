@@ -267,12 +267,25 @@ public class GameAlgorithm : Turn
         }
     }
 
-    public void EndGame(Deck deck)
+    public void EndGame()
     {
-        foreach(var tmp in deck.cards)
-        {
-            iTween.MoveTo(tmp.gameObject, new Vector2(10f, 0f), 1f);
+        foreach (var p in GetTotalPlayer()) {
+            DestroyPlayer(p);
         }
+        DestroyPlayer(trash);
+    }
+
+    public void DestroyPlayer(Player p)
+    {
+        p.Clear();
+        foreach (var tmp in p.cards)
+        {
+            tmp.Hide();
+            iTween.MoveTo(tmp.gameObject, new Vector2(5, 0.15f), 1f);
+            Destroy(tmp.gameObject, 1f);
+            //tmp.DestroyCard();
+        }
+        Destroy(p.gameObject);
     }
 
     /// <summary>

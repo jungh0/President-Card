@@ -42,14 +42,14 @@ namespace Game
             cards.Add(c);
         }
 
-        //public void Clear()
-        //{
-        //    foreach (Card c in cards)
-        //    {
-        //        c.DestroyCard();
-        //    }
-        //    cards.Clear();
-        //}
+        public void Clear()
+        {
+            foreach (Card c in cards)
+            {
+                c.DestroyCard();
+            }
+            cards.Clear();
+        }
 
         //public void FlipFaceUp()
         //{

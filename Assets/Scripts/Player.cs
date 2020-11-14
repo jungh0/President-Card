@@ -12,10 +12,10 @@ namespace Game
         public bool isHouse;
         public bool isTrash;
         public string name;
-        public GameObject text;
+        //public GameObject text;
         private int trashOrder = 1;
 
-        public void Initialise(float x, float y, bool houseOrPlayer, bool isTrash, string name, GameObject text)
+        public void Initialise(float x, float y, bool houseOrPlayer, bool isTrash, string name)
         {
             base.Initialise();
             xPos = x;
@@ -23,7 +23,7 @@ namespace Game
             isHouse = houseOrPlayer;
             this.isTrash = isTrash;
             this.name = name;
-            this.text = text;
+
         }
 
         public Card PlayCard(Card c)

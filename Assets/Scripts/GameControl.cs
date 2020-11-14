@@ -9,7 +9,7 @@ namespace Game
         /// <summary>
         /// pulbic
         /// </summary>
-
+        public Canvas canvas_1, canvas_2, canvas_3;
         //텍스트
         public GameObject text;
 
@@ -34,6 +34,7 @@ namespace Game
 
         //로딩중인가
         private bool isLoading = true;
+        private bool isStart = false;
 
         public void PassClick()
         {
@@ -41,16 +42,7 @@ namespace Game
             {
                 turn?.PassClick();
             }
-            
         }
-
-/*        public void CancelClick()
-        {
-            if (cancel.IsInteractable())
-            {
-                turn?.CancelClick();
-            }
-        }*/
 
         public void SubmitClick()
         {
@@ -60,20 +52,20 @@ namespace Game
             }
         }
 
-        /// <summary>
-        /// 처음시작
-        /// </summary>
-        public void StartAndChaneScreen()
+        public void RealEnd()
         {
-            CanvasTranform = Canvas.GetComponent<Transform>();
-            pass.gameObject.SetActive(true);
-            submit.gameObject.SetActive(true);
-
-            RealStart();
+            isLoading = false;
+            isStart = false;
+            turn?.EndGame();
+            ReadyStart();
         }
 
         public void RealStart()
         {
+            isStart = true;
+            canvas_1.gameObject.SetActive(true);
+            canvas_2.gameObject.SetActive(false);
+
             turn = gameObject.AddComponent<GameAlgorithm>();
             isLoading = true;
             InitPlayers();
@@ -84,14 +76,44 @@ namespace Game
             StartCoroutine(InitialDeal());
         }
 
+        public void ReadyStart()
+        {
+            CloseMenu();
+            canvas_1.gameObject.SetActive(false);
+            canvas_2.gameObject.SetActive(true);
+        }
+
+        public void RealKill()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
+
+        public void OpenMenu()
+        {
+            if (!isLoading)
+            {
+                canvas_3.gameObject.SetActive(true);
+            }
+                
+        }
+
+        public void CloseMenu()
+        {
+            canvas_3.gameObject.SetActive(false);
+        }
+
         void Awake()
         {
-            //RealStart();
+
         }
 
         void Start()
         {
-            RealStart();
+            ReadyStart();
         }
 
         /// <summary>
@@ -99,10 +121,14 @@ namespace Game
         /// </summary>
         void Update()
         {
+            if (!isStart)
+            {
+                return;
+            }
+
             if (turn?.IsGameDone() ?? false)
             {
-                turn?.EndGame(deck);
-                RealStart();
+                RealEnd();
             }
 
             //누구 차례인지 버튼에서 글자바꿔주고 비활성화 관리
@@ -120,7 +146,6 @@ namespace Game
                 submit.enabled = turn?.SelectedCardCanSubmit(now) ?? false; //버튼 활성화 비활성화
                 pass.enabled = !now.isHouse; //pass 버튼 활성화 비활성화
                 //cancel.enabled = turn?.CanCancel(now) ?? false;
-
 
                 turn?.MakeBlackCard(now);
                 turn?.CheckPass();
@@ -188,19 +213,10 @@ namespace Game
             if (isHouse)
                 locationY = -1.5f;
 
-            //text를 생성
-            GameObject playerText = null;
-            if (!isTrash)
-            {
-                playerText = Instantiate(text, new Vector3(x, y + locationY, 0), Quaternion.identity);
-                playerText.transform.parent = CanvasTranform;
-                playerText.GetComponentInChildren<Text>().text = playerName;
-            }
-
             //player를 생성
             GameObject playerClone = Instantiate(playerPrefab);
             Player player = playerClone.GetComponent<Player>();
-            player.Initialise(x, y, isHouse, isTrash, buttonName, playerText);
+            player.Initialise(x, y, isHouse, isTrash, buttonName);
 
             if (!isTrash)
             {

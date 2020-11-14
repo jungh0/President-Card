@@ -20,7 +20,7 @@ public class Main : MonoBehaviour
     private int clickCnt = 0;
     public void ChangeScene()
     {
-        if(clickCnt > 1)
+        if(clickCnt > 0)
         {
             SceneManager.LoadScene("RealGame");
         }

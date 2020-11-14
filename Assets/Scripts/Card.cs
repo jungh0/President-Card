@@ -15,7 +15,6 @@ namespace Game
             Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace, Two
         }
 
-
         public Suits Suit { get; set; }
         public Ranks Rank { get; set; }
         public Sprite back;
