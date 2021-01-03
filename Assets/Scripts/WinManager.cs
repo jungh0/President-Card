@@ -24,4 +24,14 @@ public class WinManager : MonoBehaviour
         return whoWin.Count >= 4;
     }
 
+    public List<string> IsGameDoneList()
+    {
+        var aa = new List<string>();
+        foreach(var a in whoWin)
+        {
+            aa.Add(a.name.Replace("Your turn","You").Replace("'s turn", ""));
+        }
+        return aa;
+    }
+
 }

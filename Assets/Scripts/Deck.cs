@@ -35,7 +35,6 @@ namespace Game
 
         public void Shuffle()
         {
-
             for (int i = cards.Count - 1; i > 0; i--)
             {
                 int j = Random.Range(0, i);

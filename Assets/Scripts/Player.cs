@@ -81,7 +81,7 @@ namespace Game
                     goLeft = 0;
                 }
 
-                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i;
+                cards[i].GetComponent<SpriteRenderer>().sortingOrder = i + 1;
 
                 if (!isTrash)
                 {

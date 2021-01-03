@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameAlgorithm : Turn
 {
@@ -18,12 +19,14 @@ public class GameAlgorithm : Turn
     private int countSelected = -1;
     private Card nowCardSelectedLow = null;
     private List<Card> nowCardSelected = null;
-
     private int passCnt = 0;
 
-    public new void Initialise()
-    {
+    private bool Allow8Clear = true;
 
+    public new void Initialise(Text status, bool Allow8Clear)
+    {
+        statusText = status;
+        this.Allow8Clear = Allow8Clear;
     }
 
     public bool isSelected()
@@ -163,34 +166,58 @@ public class GameAlgorithm : Turn
 
     public void SubmitClick()
     {
-        if(nowCardSelected?.Count > 0)
+        if (nowCardSelected?.Count > 0)
         {
+            bool is8Clear = false;
             SoundManager.instance.PlaySound("soundCard2");
 
             var now = GetNowTurn();
             var deck = now.cards;
             foreach (var tmp in nowCardSelected)
             {
+                if(Allow8Clear && tmp.Rank == Card.Ranks.Eight)
+                {
+                    is8Clear = true;
+                }
+
                 deck.Remove(tmp);
                 trash.Add(tmp);
             }
             SortCard(nowCardSelected);
             trash.CardTrash(nowCardSelected);
 
-
+            now.SortCard();
+            print($"{now.cards.Count}");
             if (now.cards.Count == 0)
             {
+                this.DelNowPlayer(now);
                 AddWinner(now);
             }
-            now.SortCard();
 
             SetSelected();
             ResetSelected();
             passCnt = 0;
 
-            NextTurn();
-            StartCoroutine(AI());
+            if (is8Clear)
+            {
+                ChangeStatus("8 Clear!!");
+                StartCoroutine(_8Clear());
+            }
+            else
+            {
+                NextTurn();
+                StartCoroutine(AI());
+            }
         }
+    }
+
+    public IEnumerator _8Clear()
+    {
+        yield return new WaitForSeconds(1);
+
+        ChangeStatusNowTurn();
+        CheckPass(forceWin: true);
+        StartCoroutine(AI());
     }
 
     /// <summary>
@@ -211,7 +238,6 @@ public class GameAlgorithm : Turn
             NextTurn();
             StartCoroutine(AI());
         }
-
     }
 
     /// <summary>
@@ -251,10 +277,10 @@ public class GameAlgorithm : Turn
     /// <summary>
     /// 모두 패스하여 이번 라운드 승리한 경우
     /// </summary>
-    public void CheckPass()
+    public void CheckPass(bool forceWin = false)
     {
         //Debug.Log($"{passCnt + 1} {NowPlayerCount()}");
-        if (passCnt + 1 >= NowPlayerCount())
+        if (passCnt + 1 >= NowPlayerCount() || forceWin)
         {
             ResetCard();
 
@@ -269,10 +295,19 @@ public class GameAlgorithm : Turn
 
     public void EndGame()
     {
-        foreach (var p in GetTotalPlayer()) {
-            DestroyPlayer(p);
+        try
+        {
+            foreach (var p in GetTotalPlayer())
+            {
+                DestroyPlayer(p);
+            }
+            DestroyPlayer(trash);
         }
-        DestroyPlayer(trash);
+        catch
+        {
+
+        }
+        
     }
 
     public void DestroyPlayer(Player p)
@@ -298,60 +333,89 @@ public class GameAlgorithm : Turn
 
         try
         {
-            var p = this.GetNowTurn();
-            if (p.cards.Count == 0)
+            var p = GetNowTurn();
+            if (p.isHouse)
             {
-                //이 플레이어는 승리 했다.
-                //가지고있는 카드의 개수가 0이다.
-                this.DelNowPlayer(p);
-                StartCoroutine(AI()); //그러므로 다음 턴
-            }
-            else
-            {
-                if (p.isHouse)
-                {
-                    ResetSelected();
+                ResetSelected();
 
-                    if (nowCard != null)
+                if (nowCard != null)
+                {
+                    if (status == 0) // 1개
                     {
-                        if (status == 0) // 1개
+                        List<Card> tmpNeed = new List<Card>();
+                        foreach (var tmp in p.cards)
                         {
-                            List<Card> tmpNeed = new List<Card>();
-                            foreach (var tmp in p.cards)
+                            if (tmp.Rank > nowCard.Rank)
                             {
-                                if (tmp.Rank > nowCard.Rank)
-                                {
-                                    statusSelected = status;
-                                    countSelected = count;
-                                    nowCardSelectedLow = tmp;
-                                    nowCardSelected = new List<Card> { tmp };
-                                    break;
-                                }
+                                statusSelected = status;
+                                countSelected = count;
+                                nowCardSelectedLow = tmp;
+                                nowCardSelected = new List<Card> { tmp };
+                                break;
                             }
                         }
-                        else if (status == 1) // 같은거
+                    }
+                    else if (status == 1) // 같은거
+                    {
+                        int need = count;
+                        List<Card> tmpNeed = new List<Card>();
+                        Card tmpCard = null;
+
+                        foreach (var tmp in p.cards)
                         {
-                            int need = count;
-                            List<Card> tmpNeed = new List<Card>();
-                            Card tmpCard = null;
+                            if (tmp.Rank <= nowCard.Rank)
+                            {
+                                continue;
+                            }
+
+                            if (tmpCard == null || tmpCard.Rank == tmp.Rank)
+                            {
+                                tmpCard = tmp;
+                                tmpNeed.Add(tmp);
+                            }
+                            else
+                            {
+                                tmpNeed = new List<Card>();
+                                tmpCard = null;
+                            }
+
+                            if (tmpNeed.Count == need)
+                            {
+                                statusSelected = status;
+                                countSelected = count;
+                                nowCardSelectedLow = tmp;
+                                nowCardSelected = tmpNeed;
+                                break;
+                            }
+                        }
+                    }
+                    else if (status == 2) // 연속된거
+                    {
+                        int need = count;
+                        List<Card> tmpNeed = new List<Card>();
+                        Card tmpCard = null;
+
+                        List<Card.Suits> suits = new List<Card.Suits> { Card.Suits.Club, Card.Suits.Diamond, Card.Suits.Heart, Card.Suits.Spade };
+
+                        foreach (var suit in suits)
+                        {
+                            tmpNeed = new List<Card>();
+                            tmpCard = null;
 
                             foreach (var tmp in p.cards)
                             {
-                                if (tmp.Rank <= nowCard.Rank)
+                                if (tmp.Rank <= nowCard.Rank || tmp.Suit != suit)
                                 {
                                     continue;
                                 }
 
-                                if (tmpCard == null || tmpCard.Rank == tmp.Rank)
-                                {
-                                    tmpCard = tmp;
-                                    tmpNeed.Add(tmp);
-                                }
-                                else
+                                if (tmpCard != null && tmpCard.Rank + 1 != tmp.Rank)
                                 {
                                     tmpNeed = new List<Card>();
-                                    tmpCard = null;
                                 }
+
+                                tmpCard = tmp;
+                                tmpNeed.Add(tmp);
 
                                 if (tmpNeed.Count == need)
                                 {
@@ -363,67 +427,28 @@ public class GameAlgorithm : Turn
                                 }
                             }
                         }
-                        else if (status == 2) // 연속된거
-                        {
-                            int need = count;
-                            List<Card> tmpNeed = new List<Card>();
-                            Card tmpCard = null;
 
-                            List<Card.Suits> suits = new List<Card.Suits> { Card.Suits.Club, Card.Suits.Diamond, Card.Suits.Heart, Card.Suits.Spade };
 
-                            foreach (var suit in suits)
-                            {
-                                tmpNeed = new List<Card>();
-                                tmpCard = null;
-
-                                foreach (var tmp in p.cards)
-                                {
-                                    if (tmp.Rank <= nowCard.Rank || tmp.Suit != suit)
-                                    {
-                                        continue;
-                                    }
-
-                                    if (tmpCard != null && tmpCard.Rank + 1 != tmp.Rank)
-                                    {
-                                        tmpNeed = new List<Card>();
-                                    }
-
-                                    tmpCard = tmp;
-                                    tmpNeed.Add(tmp);
-
-                                    if (tmpNeed.Count == need)
-                                    {
-                                        statusSelected = status;
-                                        countSelected = count;
-                                        nowCardSelectedLow = tmp;
-                                        nowCardSelected = tmpNeed;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            
-                        }
                     }
-                    else // AI가 처음낼 때
-                    {
-                        statusSelected = 0;
-                        countSelected = 1;
-                        nowCardSelectedLow = p.cards[0];
-                        nowCardSelected = new List<Card> { p.cards[0] };
-                    }
-
-                    if(nowCardSelected?.Count > 0)
-                    {
-                        SubmitClick();
-                    }
-                    else
-                    {
-                        PassClick();
-                    }
-
-                   
                 }
+                else // AI가 처음낼 때
+                {
+                    statusSelected = 0;
+                    countSelected = 1;
+                    nowCardSelectedLow = p.cards[0];
+                    nowCardSelected = new List<Card> { p.cards[0] };
+                }
+
+                if (nowCardSelected?.Count > 0)
+                {
+                    SubmitClick();
+                }
+                else
+                {
+                    PassClick();
+                }
+
+
             }
         }
         catch

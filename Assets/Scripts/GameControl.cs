@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,16 +10,20 @@ namespace Game
         /// <summary>
         /// pulbic
         /// </summary>
-        public Canvas canvas_1, canvas_2, canvas_3;
+        public Canvas canvas_1, canvas_2, canvas_3, canvas_4;
         //텍스트
         public GameObject text;
 
         public Text player1_cnt, player2_cnt, player3_cnt, status;
 
+        public Text win1, win2, win3, win4;
+
         //버튼
         public Lean.Gui.LeanButton pass, submit;
 
         public GameObject deckPrefab, playerPrefab;
+
+        public bool _8clear = true;
 
         /// <summary>
         /// private
@@ -36,12 +41,9 @@ namespace Game
         private bool isLoading = true;
         private bool isStart = false;
 
-        public void PassClick()
+        public void _8clearT()
         {
-            if (pass.IsInteractable())
-            {
-                turn?.PassClick();
-            }
+            _8clear = !_8clear;
         }
 
         public void SubmitClick()
@@ -49,6 +51,13 @@ namespace Game
             if (submit.IsInteractable())
             {
                 turn?.SubmitClick();
+            }
+        }
+        public void PassClick()
+        {
+            if (pass.IsInteractable())
+            {
+                turn?.PassClick();
             }
         }
 
@@ -60,13 +69,23 @@ namespace Game
             ReadyStart();
         }
 
+        public void RealEndNormal(List<string> rankList)
+        {
+            isLoading = false;
+            isStart = false;
+            turn?.EndGame();
+            GameResult(rankList);
+        }
+
         public void RealStart()
         {
             isStart = true;
             canvas_1.gameObject.SetActive(true);
             canvas_2.gameObject.SetActive(false);
+            canvas_4.gameObject.SetActive(false);
 
             turn = gameObject.AddComponent<GameAlgorithm>();
+            turn.Initialise(status, Allow8Clear: !_8clear);
             isLoading = true;
             InitPlayers();
             deck = deckPrefab.GetComponent<Deck>();
@@ -81,6 +100,21 @@ namespace Game
             CloseMenu();
             canvas_1.gameObject.SetActive(false);
             canvas_2.gameObject.SetActive(true);
+            canvas_4.gameObject.SetActive(false);
+        }
+
+        public void GameResult(List<string> rankList)
+        {
+            CloseMenu();
+
+            win1.text = $"1. {rankList[0]} (WIN!! )";
+            win2.text = $"2. {rankList[1]}";
+            win3.text = $"3. {rankList[2]}";
+            win4.text = $"4. {rankList[3]}";
+
+            canvas_1.gameObject.SetActive(false);
+            canvas_2.gameObject.SetActive(false);
+            canvas_4.gameObject.SetActive(true);
         }
 
         public void RealKill()
@@ -98,7 +132,7 @@ namespace Game
             {
                 canvas_3.gameObject.SetActive(true);
             }
-                
+
         }
 
         public void CloseMenu()
@@ -128,7 +162,8 @@ namespace Game
 
             if (turn?.IsGameDone() ?? false)
             {
-                RealEnd();
+                var rankList = turn?.IsGameDoneList();
+                RealEndNormal(rankList);
             }
 
             //누구 차례인지 버튼에서 글자바꿔주고 비활성화 관리
@@ -155,7 +190,7 @@ namespace Game
                 player2_cnt.text = $"Player2 ( {remainCnt[2]} )";
                 player3_cnt.text = $"Player3 ( {remainCnt[3]} )";
 
-                status.text = $"{now.name}";
+                
             }
 
             //로딩일때 버튼

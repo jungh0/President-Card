@@ -1,5 +1,6 @@
 ﻿using Game;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Turn : WinManager
 {
@@ -7,11 +8,12 @@ public class Turn : WinManager
     private readonly List<Player> nowPlayer = new List<Player>();
     private readonly List<Player> totalPlayer = new List<Player>();
     public Player trash;
+    public Text statusText;
 
-    public void Initialise()
+    public new void Initialise()
     {
-
     }
+
 
     public void AddPlayer(Player a)
     {
@@ -73,5 +75,24 @@ public class Turn : WinManager
         {
             nowIndex = 0;
         }
+        ChangeStatusNowTurn();
+    }
+
+    public void ChangeStatus(string tt)
+    {
+        statusText.text = tt;
+    }
+
+    public void ChangeStatusNowTurn()
+    {
+        if(GetNowTurn() != null)
+        {
+            ChangeStatus($"{GetNowTurn().name}");
+        }
+        else
+        {
+            ChangeStatus($"Game Done!");
+        }
+        
     }
 }
